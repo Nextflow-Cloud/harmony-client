@@ -1,0 +1,15 @@
+.sidebar-item.active:after {
+    background-color: #0061b4;
+    border-radius: 6px;
+    content: "";
+    height: 45%;
+    left: -1px;
+    position: absolute;
+    top: 28%;
+    width: 3px;
+    /* box-sizing: border-box; */
+}
+
+#sidebar.hidden .item-name {
+    display: none;
+}

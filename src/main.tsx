@@ -12,5 +12,4 @@ Object.defineProperty(window, "internals", {
     configurable: false
 });
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-render(<App />, document.getElementById("app")!);
+render(<App />, document.getElementById("app") as HTMLElement);

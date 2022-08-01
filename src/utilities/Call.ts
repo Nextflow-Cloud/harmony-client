@@ -19,7 +19,7 @@ class Call {
         this.socket = new ExtendedWebSocket("wss://link1.nextflow.cloud", token, { reconnect: true }); //rtc.nextflow.cloud
         this.socket.on("message", m => {
             if (m.type === WebSocketCodes.NEW_PRODUCER) {
-                const p = m.data!.producer as { id: string; kind: "audio" | "video"; };
+                const p = (m.data as Record<string, unknown>).producer as { id: string; kind: "audio" | "video"; };
                 this.onNewProducer(p.id, p.kind);
             }
         });
@@ -32,14 +32,15 @@ class Call {
     }
     protected async onNewProducer(id: string, type: "audio" | "video") {
         const transportData = await this.socket.request({ type: WebSocketCodes.TRANSPORT, data: { id: this.id } });
-        const transport = this.device.createRecvTransport(transportData.data!.transport as TransportOptions);
+        const transportOptions = (transportData.data as Record<string, unknown>).transport as TransportOptions;
+        const transport = this.device.createRecvTransport(transportOptions);
         transport.on("connect", ({ dtlsParameters }, callback, errback) => {
-            this.socket.request({ type: WebSocketCodes.DTLS, data: { dtlsParameters, transportId: (transportData.data!.transport as { id: string; }).id, id: this.id } })
+            this.socket.request({ type: WebSocketCodes.DTLS, data: { dtlsParameters, transportId: transportOptions.id, id: this.id } })
                 .then(() => callback())
                 .catch(e => errback(e));
         });
         const consumerData = await this.socket.request({ type: WebSocketCodes.CONSUME, data: { rtpCapabilities: this.device.rtpCapabilities, producerId: id, id: this.id, transportId: (transportData.data!.transport as { id: string; }).id } });
-        const consumer = await transport.consume(consumerData.data!.consumer as ConsumerOptions);
+        const consumer = await transport.consume((consumerData.data as Record<string, unknown>).consumer as ConsumerOptions);
         await this.socket.request({ type: WebSocketCodes.RESUME, data: { id: this.id, consumerId: consumer.id } });
         const stream = new MediaStream([consumer.track]);
         this.consumeTracks.push(stream);
@@ -66,18 +67,19 @@ class Call {
     async connect() {
         await this.socket.connect();
         const rtpCapabilities = await this.socket.request({ type: WebSocketCodes.CAPABILITIES, data: { id: this.id } });
-        await this.device.load({ routerRtpCapabilities: rtpCapabilities.data!.rtpCapabilities as RtpCapabilities });
+        await this.device.load({ routerRtpCapabilities: (rtpCapabilities.data as Record<string, unknown>).rtpCapabilities as RtpCapabilities });
     }
     async produce(track: MediaStreamTrack) {
         const transportData = await this.socket.request({ type: WebSocketCodes.TRANSPORT, data: { id: this.id, produce: true } });
-        const transport = this.device.createSendTransport(transportData.data!.transport as TransportOptions);
+        const transportOptions = (transportData.data as Record<string, unknown>).transport as TransportOptions;
+        const transport = this.device.createSendTransport(transportOptions);
         transport.on("connect", ({ dtlsParameters }, callback, errback) => {
-            this.socket.request({ type: WebSocketCodes.DTLS, data: { dtlsParameters, id: this.id, transportId: (transportData.data!.transport as { id: string; }).id } })
+            this.socket.request({ type: WebSocketCodes.DTLS, data: { dtlsParameters, id: this.id, transportId: transportOptions.id } })
                 .then(() => callback())
                 .catch(e => errback(e));
         });
         transport.on("produce", (parameters, callback, errback) => {
-            this.socket.request({ type: WebSocketCodes.PRODUCE, data: { parameters, id: this.id, transportId: (transportData.data!.transport as { id: string; }).id } })
+            this.socket.request({ type: WebSocketCodes.PRODUCE, data: { parameters, id: this.id, transportId: transportOptions.id } })
                 .then(data => callback(data.data!.producer as { id: string; }))
                 .catch(e => errback(e));
         });

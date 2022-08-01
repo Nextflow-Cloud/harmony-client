@@ -16,6 +16,7 @@ interface Props {
     token: string;
     openContextMenu: () => void;
     closeContextMenu: () => void;
+    // eslint-disable-next-line no-unused-vars
     showModalDialog: (title: string, message: string, buttons: { text: string; id: string; primary?: boolean }[], callback: (button: string) => void) => void;
     hideModalDialog: () => void;
 }

@@ -135,7 +135,7 @@ class ExtendedWebSocket {
             if (this.idStore.length && this.idStore.length < 3) {
                 // this.request({ type: WebSocketCodes.GET_ID });
                 const d = await new Promise((s, e) => {
-                    this.waitingPromises[this.idStore.shift()!] = [s, e];
+                    this.waitingPromises[this.idStore.shift() as string] = [s, e];
                     this.socket?.send(encode({ type: WebSocketCodes.GET_ID }));
                 }).catch(reject);
                 const { ids } = (d as { data: { ids: string[] } }).data;
@@ -151,7 +151,7 @@ class ExtendedWebSocket {
             }
         });
     }
-    async connect(timeout: number = 5000) {
+    async connect(timeout = 5000) {
         const settings = new URLSearchParams();
         settings.set("v", "1");
         settings.set("encoding", "json");

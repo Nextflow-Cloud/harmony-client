@@ -43,6 +43,7 @@ const bottomElements = [{
 const getCookie = (name: string) => document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`)?.pop();
 
 interface Props {
+    // eslint-disable-next-line no-unused-vars
     showModalDialog: (title: string, content: string, buttons: Button[], onClose: (button: string) => void) => void;
     hideModalDialog: () => void;
 }

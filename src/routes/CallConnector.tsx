@@ -41,7 +41,7 @@ const CallConnector = () => {
     };
     return (
         <div>
-            <div class={"text-sm space-x-3" + (connecting ? " text-yellow-400" : (connected ? " text-green-400" : " text-red-400"))}>
+            <div class={`text-sm space-x-3${connecting ? " text-yellow-400" : (connected ? " text-green-400" : " text-red-400")}`}>
                 {connecting && <CallConnecting20Filled />}
                 {connected && <CallCheckmark20Filled />}
                 {(!connected && !connecting) && <CallEnd20Filled />}
@@ -53,12 +53,12 @@ const CallConnector = () => {
                 {/* {call && call.consumeTracks.map(t => <Video srcObject={t} key={t.id} />)} */}
             </div>
             <audio id="audio" />
-            <button onClick={connectCall} class={"rounded-md text-white px-4 m-2 tooltip h-20" + ((connected || connecting) ? " bg-gray-400" : " bg-violet-400")} disabled={connected || connecting}><Call24Filled /><p class="text-sm">Connect call</p></button>
-            <button onClick={produce} class={"rounded-md text-white px-4 m-2 tooltip h-20" + ((!connected) ? " bg-gray-400" : " bg-violet-400")} disabled={!connected}><ShareScreenStart24Filled /><p class="text-sm">Share screen</p></button>
-            <button onClick={toggleMute} class={"rounded-md text-white px-4 m-2 tooltip h-20" + ((!connected) ? " bg-gray-400" : " bg-violet-400")} disabled={!connected}>
+            <button onClick={connectCall} class={`rounded-md text-white px-4 m-2 tooltip h-20${(connected || connecting) ? " bg-gray-400" : " bg-violet-400"}`} disabled={connected || connecting}><Call24Filled /><p class="text-sm">Connect call</p></button>
+            <button onClick={produce} class={`rounded-md text-white px-4 m-2 tooltip h-20${(!connected) ? " bg-gray-400" : " bg-violet-400"}`} disabled={!connected}><ShareScreenStart24Filled /><p class="text-sm">Share screen</p></button>
+            <button onClick={toggleMute} class={`rounded-md text-white px-4 m-2 tooltip h-20${(!connected) ? " bg-gray-400" : " bg-violet-400"}`} disabled={!connected}>
                 {unmuted ? <><MicOn24Filled/><p class="text-sm">Mute</p></> : <><MicOff24Filled /><p class="text-sm">Unmute</p></>}
             </button>
-            <button onClick={hangUp} class={"rounded-md text-white px-4 m-2 tooltip h-20" + ((!connected) ? " bg-gray-400" : " bg-violet-400")} disabled={!connected}><CallEnd20Filled /><p class="text-sm">Hang up</p></button>
+            <button onClick={hangUp} class={`rounded-md text-white px-4 m-2 tooltip h-20${(!connected) ? " bg-gray-400" : " bg-violet-400"}`} disabled={!connected}><CallEnd20Filled /><p class="text-sm">Hang up</p></button>
 
             {/* <button onClick={consume} class="bg-green-400 rounded-md text-white p-4 m-2" disabled={!connected}>Watch screen</button> */}
         

@@ -6,5 +6,8 @@ export default defineConfig({
     plugins: [preact()],
     server: {
         port: 9000,
+    },
+    esbuild: {
+        logOverride: { "this-is-undefined-in-esm": "silent" }
     }
 });

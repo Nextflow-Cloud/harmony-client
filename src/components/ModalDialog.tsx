@@ -36,6 +36,6 @@ const ModalDialog = ({ title, content, onClose, buttons }: Props) => {
             </div>
         </div>
     );
-}
+};
 
 export default ModalDialog;

@@ -27,7 +27,7 @@ const StyleParser = ({ raw }: { raw: string; }) => {
         const spoilerRegex = /\|\|(.*?)\|\|/gs;
 
         const link = (match: string, s: string) => typeof s === "number" ? "" : `<a href="${encodeURI(s)}">${s}</a>`;
-        const linkRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
+        const linkRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/g;
 
         raw = raw.replace(boldRegex, bold);
         raw = raw.replace(italicRegex, italic);

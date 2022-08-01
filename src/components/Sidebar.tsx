@@ -108,7 +108,7 @@ const Sidebar = (props: Props) => {
                         <LineHorizontal320Regular />
                     </div>
                     {props.topElements.map(element => (
-                        <div id={element.id} class={"sidebar-item space-x-3 text-sm flex hover:bg-gray-200" + (activeElement === element.id ? " active bg-gray-200" : "")} style={{ 
+                        <div key={element.id} id={element.id} class={`sidebar-item space-x-3 text-sm flex hover:bg-gray-200${activeElement === element.id ? " active bg-gray-200" : ""}`} style={{ 
                             width: "100%",
                             paddingTop: "8px",
                             paddingBottom: "8px",
@@ -127,7 +127,7 @@ const Sidebar = (props: Props) => {
             </div>
             <div className="bottom flex flex-col w-full">
                 {props.bottomElements.map(element => (
-                    <div id={element.id} class={"sidebar-item space-x-3 text-sm flex hover:bg-gray-200" + (activeElement === element.id ? " active bg-gray-200" : "")} style={{ 
+                    <div key={element.id} id={element.id} class={`sidebar-item space-x-3 text-sm flex hover:bg-gray-200${activeElement === element.id ? " active bg-gray-200" : ""}`} style={{ 
                         width: "100%",
                         paddingTop: "8px",
                         paddingBottom: "8px",

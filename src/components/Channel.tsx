@@ -59,13 +59,13 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
             //     const { currentTarget: target } = event;
             //     (target! as HTMLDivElement).scroll({ top: (target! as HTMLDivElement).scrollHeight, behavior: 'smooth' });
             // });
-            (messagesElement.current! as HTMLDivElement).scroll({ top: (messagesElement.current! as HTMLDivElement).scrollHeight, behavior: 'smooth' });
+            (messagesElement.current! as HTMLDivElement).scroll({ top: (messagesElement.current! as HTMLDivElement).scrollHeight, behavior: "smooth" });
         }
         const textarea = document.getElementById("message-input")!;
         const heightLimit = 200;
         textarea.onchange = () => {
             textarea.style.height = "";
-            textarea.style.height = Math.min(textarea.scrollHeight, heightLimit) + "px";
+            textarea.style.height = `${Math.min(textarea.scrollHeight, heightLimit)}px`;
         };
         fetchUser();
         establishConnection();
@@ -149,32 +149,32 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
             return date.getDate() === yesterday.getDate() && date.getMonth() === yesterday.getMonth() && date.getFullYear() === yesterday.getFullYear();
         };
 
-        var date = new Date(time);
-        var hours = date.getHours().toString().padStart(2, "0");
-        var minutes = date.getMinutes().toString().padStart(2, "0");
-        var seconds = date.getSeconds().toString().padStart(2, "0");
+        const date = new Date(time);
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+        const seconds = date.getSeconds().toString().padStart(2, "0");
 
-        var currentDate = new Date();
-        var currentMonth = currentDate.getMonth().toString().padStart(2, "0");
-        var currentDay = currentDate.getDate().toString().padStart(2, "0");
-        var currentYear = currentDate.getFullYear().toString().padStart(4, "0");
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth().toString().padStart(2, "0");
+        const currentDay = currentDate.getDate().toString().padStart(2, "0");
+        const currentYear = currentDate.getFullYear().toString().padStart(4, "0");
 
-        var month = (date.getMonth() + 1).toString().padStart(2, "0");
-        var day = date.getDate().toString().padStart(2, "0");
-        var year = date.getFullYear().toString().padStart(4, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const year = date.getFullYear().toString().padStart(4, "0");
 
-        var dateFormatted = `${month}/${day}/${year}`;
-        var timeFormatted = `${hours}:${minutes}:${seconds}`;
+        const dateFormatted = `${month}/${day}/${year}`;
+        const timeFormatted = `${hours}:${minutes}:${seconds}`;
 
-        var currentDateFormatted = `${currentMonth}/${currentDay}/${currentYear}`;
+        const currentDateFormatted = `${currentMonth}/${currentDay}/${currentYear}`;
 
         if (dateFormatted === currentDateFormatted) {
             return `Today at ${timeFormatted}`;
         } else if (isYesterday(time)) {
             return `Yesterday at ${timeFormatted}`;
-        } else {
-            return `${dateFormatted} at ${timeFormatted}`;
-        }
+        } 
+        return `${dateFormatted} at ${timeFormatted}`;
+        
     };
     const joinCall = () => {
         showModalDialog(
@@ -281,7 +281,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
             </div>
             <div className="input flex self-stretch justify-self-end px-5 py-2 w-full">
                 <textarea onChange={v => {
-                    setMessage((v.target as HTMLTextAreaElement).value)
+                    setMessage((v.target as HTMLTextAreaElement).value);
                     expandingTextArea(v.target as HTMLTextAreaElement, { maxLines: 10 });
                 }} onKeyPress={handleKeypress} value={message} type="text" placeholder="Type a message..." className="w-full h-12 px-4 py-2 border-2 rounded-md border-slate-300" id="message-input" />
                 <div className="self-center mx-5 px-5 py-3 rounded-md hover:opacity-80 hover:bg-slate-200 hover:text-green-400 border-slate-200 border-2 h-12 flex justify-center items-center" onClick={send}> 

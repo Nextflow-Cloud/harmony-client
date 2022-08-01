@@ -49,9 +49,7 @@ interface Props {
 }
 
 const Channel = ({ showModalDialog, hideModalDialog }: Props) => {
-    
     const [activeElement, setActiveElement] = useState("home");
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -80,7 +78,6 @@ const Channel = ({ showModalDialog, hideModalDialog }: Props) => {
         setActiveElement(loc[2].toLowerCase());
     }, [location.pathname]);
     
-
     return (
         <>
             <Sidebar defaultElement="home" activeElement={activeElement} setActiveElement={setActiveElement} topElements={topElements} bottomElements={bottomElements} />

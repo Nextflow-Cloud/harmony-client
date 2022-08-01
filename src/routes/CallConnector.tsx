@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import Video from "../components/Video";
 import Call from "../utilities/Call";
-import { Call24Filled, ShareScreenStart24Filled, CallCheckmark20Filled, CallEnd20Filled, CallConnecting20Filled, MicOff24Filled, MicOn24Filled } from "@fluentui/react-icons";
+import { Call24Filled, ShareScreenStart24Filled, CallCheckmark20Filled, CallEnd20Filled, CallConnecting20Filled, MicOff24Filled, Mic24Filled } from "@fluentui/react-icons";
 import "../tooltips.css";
 import { Producer } from "mediasoup-client/lib/Producer";
 
@@ -56,7 +56,7 @@ const CallConnector = () => {
             <button onClick={connectCall} class={`rounded-md text-white px-4 m-2 tooltip h-20${(connected || connecting) ? " bg-gray-400" : " bg-violet-400"}`} disabled={connected || connecting}><Call24Filled /><p class="text-sm">Connect call</p></button>
             <button onClick={produce} class={`rounded-md text-white px-4 m-2 tooltip h-20${(!connected) ? " bg-gray-400" : " bg-violet-400"}`} disabled={!connected}><ShareScreenStart24Filled /><p class="text-sm">Share screen</p></button>
             <button onClick={toggleMute} class={`rounded-md text-white px-4 m-2 tooltip h-20${(!connected) ? " bg-gray-400" : " bg-violet-400"}`} disabled={!connected}>
-                {unmuted ? <><MicOn24Filled/><p class="text-sm">Mute</p></> : <><MicOff24Filled /><p class="text-sm">Unmute</p></>}
+                {unmuted ? <><Mic24Filled /><p class="text-sm">Mute</p></> : <><MicOff24Filled /><p class="text-sm">Unmute</p></>}
             </button>
             <button onClick={hangUp} class={`rounded-md text-white px-4 m-2 tooltip h-20${(!connected) ? " bg-gray-400" : " bg-violet-400"}`} disabled={!connected}><CallEnd20Filled /><p class="text-sm">Hang up</p></button>
 

@@ -8,6 +8,7 @@ interface Props {
     title: string;
     content: string;
     buttons: Button[];
+    // eslint-disable-next-line no-unused-vars
     onClose: (button: string) => void;
 }
 

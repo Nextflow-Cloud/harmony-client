@@ -10,6 +10,7 @@ interface SidebarElement {
 interface Props {
     defaultElement: string;
     activeElement: string;
+    // eslint-disable-next-line no-unused-vars
     setActiveElement: (id: string) => void;
     topElements: SidebarElement[];
     bottomElements: SidebarElement[];
@@ -19,7 +20,7 @@ const Sidebar = (props: Props) => {
     const [activeElement, setActiveElement] = useState<string>(props.activeElement);
     const [downElement, setDownElement] = useState<string>();
     const menu = () => {
-        const sidebar = (document.getElementById("sidebar")! as HTMLDivElement);
+        const sidebar = (document.getElementById("sidebar") as HTMLDivElement);
         sidebar.classList.toggle("hidden");
         // #sidebar.hidden .item-name {
         //     display: none;
@@ -29,10 +30,10 @@ const Sidebar = (props: Props) => {
     };
     useEffect(() => {
         if (downElement)
-            (document.getElementById(downElement)! as HTMLDivElement).classList.add("opacity-50");
+            (document.getElementById(downElement) as HTMLDivElement).classList.add("opacity-50");
         const listener = () => {
             if (downElement) {
-                const element = document.getElementById(downElement)! as HTMLDivElement;
+                const element = document.getElementById(downElement) as HTMLDivElement;
                 element.classList.remove("opacity-50");
                 setDownElement(undefined);
             }
@@ -44,12 +45,12 @@ const Sidebar = (props: Props) => {
     }, [downElement]);
     useEffect(() => {
         if (props.activeElement !== activeElement) {
-            const element = document.getElementById(props.activeElement)! as HTMLDivElement;
+            const element = document.getElementById(props.activeElement) as HTMLDivElement;
             if (element) {
                 element.classList.add("active");
             }
             if (activeElement) {
-                const oldElement = document.getElementById(activeElement)! as HTMLDivElement;
+                const oldElement = document.getElementById(activeElement) as HTMLDivElement;
                 oldElement.classList.remove("active");
             }
             setActiveElement(props.activeElement);

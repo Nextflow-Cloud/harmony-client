@@ -1,6 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
 import { useNavigate } from "react-router-dom";
-import ModalDialog from "../components/ModalDialog";
 
 import { Chat20Regular, Group20Regular, Home20Regular, MailInbox20Regular, Person20Regular, Settings20Regular } from "@fluentui/react-icons";
 import Sidebar from "../components/Sidebar";

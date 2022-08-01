@@ -54,14 +54,9 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         });
         if (messagesElement.current) {
             observer.observe(messagesElement.current, { childList: true });
-            
-            // messagesElement.current.addEventListener('DOMNodeInserted', event => {
-            //     const { currentTarget: target } = event;
-            //     (target! as HTMLDivElement).scroll({ top: (target! as HTMLDivElement).scrollHeight, behavior: 'smooth' });
-            // });
-            (messagesElement.current! as HTMLDivElement).scroll({ top: (messagesElement.current! as HTMLDivElement).scrollHeight, behavior: "smooth" });
+            (messagesElement.current as HTMLDivElement).scroll({ top: (messagesElement.current as HTMLDivElement).scrollHeight, behavior: "smooth" });
         }
-        const textarea = document.getElementById("message-input")!;
+        const textarea = document.getElementById("message-input") as HTMLElement;
         const heightLimit = 200;
         textarea.onchange = () => {
             textarea.style.height = "";
@@ -112,7 +107,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         const socket = new ExtendedWebSocket("wss://link1.nextflow.cloud/api/rpc", token);
         socket.on("message", (message: WebSocketMessage) => {
             if (message.type === WebSocketCodes.CHANNEL_MESSAGE) {
-                const data = message.data!;
+                const data = message.data as Record<string, unknown>;
                 const m: ChannelMessage = {
                     content: data.content as string,
                     createdAt: data.createdAt as number,
@@ -195,7 +190,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
                 );
                 return;
             }
-            console.log("Message: " + message);
+            console.log(`Message: ${message}`);
             const data = await socket?.request({ type: WebSocketCodes.SEND_CHANNEL_MESSAGE, data: { content: message.trim(), channelId: "1" } });
             if (data) {
                 const { messageId } = data.data as { messageId: string };

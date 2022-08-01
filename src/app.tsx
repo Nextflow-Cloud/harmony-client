@@ -1,5 +1,4 @@
-import { Logo } from "./logo";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Authenticated from "./components/helpers/Authenticated";
 import MainApp from "./routes/MainApp";
 import Test from "./routes/Test";
@@ -16,6 +15,7 @@ interface Button {
 
 const App = () => {
     const [modalDialog, setModalDialog] = useState<JSX.Element>();
+    // eslint-disable-next-line no-unused-vars
     const showModalDialog = (title: string, content: string, buttons: Button[], onClose: (button: string) => void) => {
         setModalDialog(<ModalDialog title={title} content={content} buttons={buttons} onClose={onClose} />);
     };
@@ -26,7 +26,12 @@ const App = () => {
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<Logo />} />
+                    <Route path="/" element={
+                        <Authenticated>
+                            <Navigate to="/app" />
+                            {/* TODO: Navigate to Nextflow information page if not signed in */}
+                        </Authenticated>
+                    } />
                     <Route path="/app" element={
                         <Authenticated>
                             <MainApp />
@@ -48,22 +53,6 @@ const App = () => {
             {modalDialog ? modalDialog : <></>}
         </>
     );
-    // return (
-    //     <>
-    //         <Logo />
-    //         <p>Hello Vite + Preact!</p>
-    //         <p>
-    //             <a
-    //                 class="link"
-    //                 href="https://preactjs.com/"
-    //                 target="_blank"
-    //                 rel="noopener noreferrer"
-    //             >
-    //       Learn Preact
-    //             </a>
-    //         </p>
-    //     </>
-    // );
 };
 
 export default App;

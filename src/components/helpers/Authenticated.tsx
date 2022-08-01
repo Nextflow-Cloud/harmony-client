@@ -1,11 +1,7 @@
 import { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
-const getCookie = (name: string) => {
-    const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
-    if (match) return match[2];
-    return null;
-};
+const getCookie = (name: string) => document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`))?.[2];
 
 const Authenticate = (props: { children: ComponentChildren; }) => {
     const [timedOut, setTimedOut] = useState(false);
@@ -33,13 +29,14 @@ const Authenticate = (props: { children: ComponentChildren; }) => {
     useEffect(() => {
         checkToken();
     }, []);
+
     if (failed) {
         location.href = `https://secure.nextflow.cloud/?continue=${encodeURIComponent(location.href)}`;
         return <></>;
     } 
     return (
         <>
-            {timedOut && <div>Warning: SSO authentication server timed out. Check service status <a href="https://status.nextflow.cloud">here</a>.</div>}
+            {timedOut && <div>Error: The authentication server timed out. Check service status <a href="https://status.nextflow.cloud">here</a>. If services are fully operational, please consult your network administrator.</div>}
             {succeeded && props.children}
         </>
     );

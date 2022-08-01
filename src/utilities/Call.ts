@@ -78,7 +78,7 @@ class Call {
         });
         transport.on("produce", (parameters, callback, errback) => {
             this.socket.request({ type: WebSocketCodes.PRODUCE, data: { parameters, id: this.id, transportId: (transportData.data!.transport as { id: string; }).id } })
-                .then(data => callback(data.data!.producer))
+                .then(data => callback(data.data!.producer as { id: string; }))
                 .catch(e => errback(e));
         });
         const producer = await transport.produce({ track, encodings: [{ maxBitrate: 1000000 }] });

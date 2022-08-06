@@ -33,6 +33,11 @@ export const enum WebSocketCodes {
     CONSUME = 24,
     RESUME = 25,
     NEW_PRODUCER = 26,
+
+    LEAVE_CALL = 27,
+
+    CALL_MEMBER_JOINED = 28,
+    CALL_MEMBER_LEFT = 29,
 }
 
 export type { WebSocketEvents, WebSocketMessage };
@@ -69,6 +74,7 @@ class ExtendedWebSocket {
     protected onMessage(event: MessageEvent) {
         // const message = JSON.parse(event.data as string) as WebSocketMessage;
         const message = decode(event.data as ArrayBuffer) as WebSocketMessage;
+        console.debug(message);
         if (message.type === WebSocketCodes.HEARTBEAT_ACK) return;
         if (message.type === WebSocketCodes.HELLO) {
             if (message.data?.ids && message.data.ids instanceof Array) 

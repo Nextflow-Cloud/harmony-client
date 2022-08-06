@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Authenticated from "./components/helpers/Authenticated";
 import MainApp from "./routes/MainApp";
 import Test from "./routes/Test";
-import CallConnector from "./routes/CallConnector";
 import Channel from "./routes/Channel";
 import ModalDialog from "./components/ModalDialog";
 import { JSX } from "preact";
@@ -39,9 +38,6 @@ const App = () => {
                     } />
                     <Route path="/test/*" element={
                         <Test />
-                    } />
-                    <Route path="/call" element={
-                        <CallConnector />
                     } />
                     <Route path="/channel/*" element={
                         <Authenticated>

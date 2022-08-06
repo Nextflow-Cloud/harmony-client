@@ -1,9 +1,12 @@
 import { Channel28Regular, Call28Filled, MoreVertical28Filled, Send28Regular } from "@fluentui/react-icons";
-import { StateUpdater, useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import ExtendedWebSocket, { WebSocketCodes, WebSocketMessage } from "../utilities/ExtendedWebSocket";
-import LRU from "../utilities/LRU";
+// import LRU from "../utilities/LRU";
 import StyleParser from "./StyleParser";
 import expandingTextArea from "../utilities/expandingTextArea";
+import CallConnector from "../routes/CallConnector";
+import Scroller from "./Scroller";
+import { Virtuoso } from "react-virtuoso";
 
 interface User {
     id: string;
@@ -34,9 +37,7 @@ interface ChannelMessage {
     id: string,
     channelId: string
 }
-const Voice = ({ setCall }: { setCall: StateUpdater<boolean> }) => {
-    return (<></>);
-};
+
 const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalDialog, hideModalDialog }: Props) => {
     const [currentUser, setCurrentUser] = useState<User>({ id: "1", username: "John Doe", avatar: "https://avatars0.githubusercontent.com/u/17098281?s=460&u=e8d9c9f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8&v=4" });
     const messagesElement = useRef<HTMLDivElement>(null);
@@ -172,12 +173,13 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         
     };
     const joinCall = () => {
-        showModalDialog(
-            "Information", 
-            "Calls not supported yet. We're working on it :)", 
-            [{ text: "OK", id: "ok", primary: true }], 
-            () => hideModalDialog()
-        );
+        // showModalDialog(
+        //     "Information", 
+        //     "Calls not supported yet. We're working on it :)", 
+        //     [{ text: "OK", id: "ok", primary: true }], 
+        //     () => hideModalDialog()
+        // );
+        setCall(true);
     };
     const send = async () => {
         if (message.trim().length > 0) {
@@ -238,43 +240,49 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
                     <MoreVertical28Filled className="w-5 h-5 hover:text-green-400 mx-2" /> {/* TODO: onClick and openContextMenu */}
                 </div>
             </div>
-            {call ? <Voice setCall={setCall} /> : <></>}
+            {call ? <CallConnector token={token} /> : <></>}
+            {/* <Scroller loadingComponent={
+                <div>Loading...</div>
+            } nextDataFn={() => {
+                "t";
+            }} nextEnd={true} nextLoading={true} previousDataFn={() => {"t";}} previousEnd={false} previousLoading={false} >
+                e
+            </Scroller> */}
+            {/* <Virtuoso>
+
+            </Virtuoso> */}
             <div ref={messagesElement} className="messages flex flex-col h-full justify-start overflow-y-scroll" onContextMenu={handleContextMenu} onClick={handleClick}>
                 {loadedMessages.map(message => (
-                    <div className="message hover:bg-gray-200 hover:bg-opacity-80 flex flex-row items-center space-x-2 w-full px-2" key={message.id}>
-                        <div className="message-header-avatar m-2 self-start">
-                            <img src={window.internals.userStore.get(message.authorId)?.avatar} className="w-14 h-14 rounded-full self-start border-slate-400 border-2" />
-                        </div>
-                        <div className="message-header-details flex flex-col">
+                    <div className="message hover:bg-gray-200 hover:bg-opacity-80 flex flex-col space-x-2 w-full" key={message.id}>
+                        <div class="reseau pr-2 pl-20 my-3 relative"> 
+                            <img src={window.internals.userStore.get(message.authorId)?.avatar} className="message-header-avatar w-12 h-12 rounded-full self-start border-slate-400 border-2 left-2 absolute m-2" style={{
+                                marginTop: "calc(4px - .25rem)"
+                            }} />
                             <div className="flex space-x-2">
-                                <div className="message-header-name self-start">
-                                    <h2><strong style={{ 
-                                        fontWeight: 500,
-                                    }}>{window.internals.userStore.get(message.authorId)?.username ?? "Unknown user"}</strong></h2> {/* use lighter font */}
-                                </div>
-                                <div className="message-header-time self-start">
-                                    <h2 style={{ 
-                                        fontWeight: 300,
-                                    }}>{formatTime(new Date(message.createdAt))}</h2> {/* use lighter font */}
-                                </div>
+                                <h2><strong className="message-header-name self-start" style={{ 
+                                    fontWeight: 500,
+                                }}>
+                                    
+                                    {window.internals.userStore.get(message.authorId)?.username ?? "Unknown user"}
+                                </strong></h2> {/* use lighter font */}
+                                <h2 className="message-header-time self-start" style={{ 
+                                    fontWeight: 300,
+                                }}>{formatTime(new Date(message.createdAt))}</h2> {/* use lighter font */}
                                 <div className="message-header-options self-start">
                                     <div className="message-header-right-options-item hover:text-green-400" onClick={() => console.log("Message options clicked")}>
                                         <MoreVertical28Filled className="w-5 h-5" />
                                     </div>
                                 </div>
                             </div>
-                            <div className="message-body flex">
-                                <p className="text-left whitespace-pre-wrap">
-                                    <StyleParser raw={message.content} />
-                                </p>
-                            </div>
+                            <p className="message-body text-left whitespace-pre-wrap">
+                                <StyleParser raw={message.content} />
+                            </p>
                         </div>
-                    
                     </div>
                 ))}
                 
             </div>
-            <div className="input flex self-stretch justify-self-end px-5 py-2 w-full">
+            <div className="input flex self-stretch justify-self-end px-5 py-4 w-full">
                 <textarea onChange={v => {
                     setMessage((v.target as HTMLTextAreaElement).value);
                     expandingTextArea(v.target as HTMLTextAreaElement, { maxLines: 10 });

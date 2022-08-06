@@ -12,6 +12,7 @@ const Video = ({ srcObject, ...props }: PropsType) => {
     useEffect(() => {
         if (!refVideo.current) return;
         refVideo.current.srcObject = srcObject;
+        refVideo.current.play();
     }, [srcObject]);
 
     return <video ref={refVideo} {...props} />;

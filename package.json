@@ -15,7 +15,8 @@
         "mediasoup-client": "^3.6.54",
         "nprogress": "^0.2.0",
         "preact": "^10.10.0",
-        "react-router-dom": "^6.3.0"
+        "react-router-dom": "^6.3.0",
+        "react-virtuoso": "^2.16.6"
     },
     "devDependencies": {
         "@preact/preset-vite": "^2.3.0",

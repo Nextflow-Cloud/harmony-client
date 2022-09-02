@@ -11,7 +11,7 @@ const Authenticate = (props: { children: ComponentChildren; }) => {
     const checkToken = async () => {
         if (getCookie("token") !== null) {
             const token = getCookie("token");
-            const request = await Promise.race([fetch("https://secure.nextflow.cloud/api/validate", {
+            const request = await Promise.race([fetch("https://sso.nextflow.cloud/api/validate", {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const Authenticate = (props: { children: ComponentChildren; }) => {
     }, []);
 
     if (failed) {
-        location.href = `https://secure.nextflow.cloud/?continue=${encodeURIComponent(location.href)}`;
+        location.href = `https://sso.nextflow.cloud/login?continue=${encodeURIComponent(location.href)}`;
         return <></>;
     } 
     return (

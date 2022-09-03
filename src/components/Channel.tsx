@@ -74,7 +74,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
     // }, [cachedUsers]);
     const fetchUser = async (id?: string) => {
         if (id && window.internals.userStore.get(id)) return;
-        const request = await fetch(`https://secure.nextflow.cloud/api/user/${id ?? ""}`, {
+        const request = await fetch(`https://sso.nextflow.cloud/api/user/${id ?? ""}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

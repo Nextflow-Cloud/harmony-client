@@ -16,11 +16,12 @@ const Authenticate = (props: { children: ComponentChildren; }) => {
                 headers: { 
                     "Content-Type": "application/json",
                 }, 
-                body: JSON.stringify({ token })
+                body: JSON.stringify({ token: token ?? "" })
             }), new Promise(r => setTimeout(r, 5000))]);
-            if (!(request instanceof Response)) setTimedOut(true);
-            else if (!request.ok) setFailed(true);
-            else setSucceeded(true);
+            if (!(request instanceof Response)) return setTimedOut(true);
+            if (!request.ok) return setFailed(true);
+            await (request as Response).json().catch(() => setFailed(true));
+            setSucceeded(true);
         } else {
             setFailed(true);
         }

@@ -15,29 +15,29 @@ interface WebSocketMessage {
 }
 
 export const enum WebSocketCodes {
-    HELLO = 0,
-    IDENTIFY = 1,
-    HEARTBEAT = 2,
-    HEARTBEAT_ACK = 3,
-    ERROR = 4,
-    GET_ID = 5,
+    HELLO = "HELLO",
+    IDENTIFY = "IDENTIFY",
+    HEARTBEAT = "HEARTBEAT",
+    HEARTBEAT_ACK = "HEARTBEAT_ACK",
+    ERROR = "ERROR",
+    GET_ID = "GET_ID",
 
-    GET_CHANNEL_MESSAGES = 10,
-    CHANNEL_MESSAGE = 11,
-    SEND_CHANNEL_MESSAGE = 12,
+    GET_CHANNEL_MESSAGES = "GET_CHANNEL_MESSAGES",
+    CHANNEL_MESSAGE = "CHANNEL_MESSAGE",
+    SEND_CHANNEL_MESSAGE = "SEND_CHANNEL_MESSAGE",
 
-    CAPABILITIES = 20,
-    TRANSPORT = 21,
-    DTLS = 22,
-    PRODUCE = 23,
-    CONSUME = 24,
-    RESUME = 25,
-    NEW_PRODUCER = 26,
+    CAPABILITIES = "CAPABILITIES",
+    TRANSPORT = "TRANSPORT",
+    DTLS = "DTLS",
+    PRODUCE = "PRODUCE",
+    CONSUME = "CONSUME",
+    RESUME = "RESUME",
+    NEW_PRODUCER = "NEW_PRODUCER",
 
-    LEAVE_CALL = 27,
+    LEAVE_CALL = "LEAVE_CALL",
 
-    CALL_MEMBER_JOINED = 28,
-    CALL_MEMBER_LEFT = 29,
+    CALL_MEMBER_JOINED = "CALL_MEMBER_JOINED",
+    CALL_MEMBER_LEFT = "CALL_MEMBER_LEFT",
 }
 
 export type { WebSocketEvents, WebSocketMessage };
@@ -77,8 +77,8 @@ class ExtendedWebSocket {
         console.debug(message);
         if (message.type === WebSocketCodes.HEARTBEAT_ACK) return;
         if (message.type === WebSocketCodes.HELLO) {
-            if (message.data?.ids && message.data.ids instanceof Array) 
-                for (const x of message.data.ids) 
+            if (message.data?.request_ids && message.data.request_ids instanceof Array) 
+                for (const x of message.data.request_ids) 
                     this.idStore.push(x);
             const id = this.idStore.length && this.idStore.shift();
             if (id) {

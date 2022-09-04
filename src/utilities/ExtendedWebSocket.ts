@@ -141,11 +141,12 @@ class ExtendedWebSocket {
             if (this.idStore.length && this.idStore.length < 3) {
                 // this.request({ type: WebSocketCodes.GET_ID });
                 const d = await new Promise((s, e) => {
-                    this.waitingPromises[this.idStore.shift() as string] = [s, e];
-                    this.socket?.send(encode({ type: WebSocketCodes.GET_ID }));
+                    const id = this.idStore.shift() as string;
+                    this.waitingPromises[id] = [s, e];
+                    this.socket?.send(encode({ type: WebSocketCodes.GET_ID, id, data: {} }));
                 }).catch(reject);
-                const { ids } = (d as { data: { ids: string[] } }).data;
-                for (const id of ids) this.idStore.push(id);
+                const { request_ids } = (d as { data: { request_ids: string[] } }).data;
+                for (const id of request_ids) this.idStore.push(id);
             }
             const id = this.idStore.length && this.idStore.shift();
             if (id) { 

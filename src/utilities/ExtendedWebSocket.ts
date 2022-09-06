@@ -120,13 +120,6 @@ class ExtendedWebSocket {
             }, 5000);
         }
     }
-    protected deserialise(data: unknown[]) {
-        const id = data[0];
-        const error = data[1];
-        const type = data[2];
-        const content = data[3];
-        return { id, error, type, data: (content as unknown[])[1] } as WebSocketMessage;
-    }
     emit<E extends keyof WebSocketEvents>(event: E, ...data: WebSocketEvents[E]) {
         this.listeners[event].forEach(listener => listener(...data));
     }

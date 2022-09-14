@@ -9,7 +9,3 @@
     width: 3px;
     /* box-sizing: border-box; */
 }
-
-#sidebar.hidden .item-name {
-    display: none;
-}

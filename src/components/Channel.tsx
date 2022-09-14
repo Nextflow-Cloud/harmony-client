@@ -224,16 +224,12 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         }
     };
     return (
-        <div className="conversation flex flex-col self-stretch w-full h-full min-h-0 overflow-hidden" style={{
-            left: "56px",
-            width: "calc(100% - 56px)",
-            position: "fixed"
-        }}>
-            <div className="description flex justify-start p-5 border-b w-full">
+        <div className="conversation flex flex-col self-stretch w-full h-full min-h-0 overflow-hidden">
+            <div className="description flex justify-start px-5 py-4 border-b w-full items-center">
                 <Channel28Regular className="w-5 h-5 mr-2" />
                 <div className="space-x-3 w-full">
                     <b>hello</b>
-                    <span className="text-gray-600">A testing channel.</span>
+                    <span className="text-gray-600 text-sm">A testing channel.</span>
                 </div>
                 <div className="justify-self-end flex flex-row">
                     {call ? <></> : <Call28Filled className="w-5 h-5 hover:text-green-400 mx-2" onClick={joinCall} />}

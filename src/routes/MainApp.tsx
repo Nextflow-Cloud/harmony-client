@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Chat20Regular, Group20Regular, Home20Regular, Settings20Regular } from "@fluentui/react-icons";
 import Sidebar from "../components/Sidebar";
-import ChannelComponent from "../components/Channel";
+import Channel from "../components/Channel";
 
 interface Button {
     text: string;
@@ -45,32 +45,32 @@ const MainApp = ({ showModalDialog, hideModalDialog }: Props) => {
         const elementIds = elements.map(k => k.id);
         const loc = location.pathname.split("/");
         if (loc.length < 3) 
-            return navigate("/channel/home");
+            return navigate("/app/home");
         if (!elementIds.includes(loc[2].toLowerCase()))
-            return navigate("/channel/home");
+            return navigate("/app/home");
         if (loc.length > 3)
-            return navigate(`/channel/${loc[2].toLowerCase()}`);
+            return navigate(`/app/${loc[2].toLowerCase()}`);
         setActiveElement(loc[2].toLowerCase());
     }, []);
     useEffect(() => {
-        navigate(`/channel/${activeElement}`);
+        navigate(`/app/${activeElement}`);
     }, [activeElement]);
     useEffect(() => {
         const elementIds = elements.map(k => k.id);
         const loc = location.pathname.split("/");
         if (loc.length < 3) 
-            return navigate("/channel/home");
+            return navigate("/app/home");
         if (!elementIds.includes(loc[2].toLowerCase()))
-            return navigate("/channel/home");
+            return navigate("/app/home");
         if (loc.length > 3)
-            return navigate(`/channel/${loc[2].toLowerCase()}`);
+            return navigate(`/app/${loc[2].toLowerCase()}`);
         setActiveElement(loc[2].toLowerCase());
     }, [location.pathname]);
     
     return (
         <div class="flex flex-row w-full h-full">
             <Sidebar defaultElement="home" activeElement={activeElement} setActiveElement={setActiveElement} elements={elements} />
-            <ChannelComponent
+            <Channel
                 // profile={{ id: "aaa", username: "aaa", avatar: "https://avatars0.githubusercontent.com/u/17098281?s=460&u=e8d9c9f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8&v=4" }} 
                 token={getCookie("token") ?? ""}
                 openContextMenu={() => {}} 

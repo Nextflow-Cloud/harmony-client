@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Authenticated from "./components/helpers/Authenticated";
 import MainApp from "./routes/MainApp";
 import Test from "./routes/Test";
-import Channel from "./routes/Channel";
 import ModalDialog from "./components/ModalDialog";
 import { JSX } from "preact";
 import { useState } from "preact/hooks";
@@ -31,18 +30,13 @@ const App = () => {
                             {/* TODO: Navigate to Nextflow information page if not signed in */}
                         </Authenticated>
                     } />
-                    <Route path="/app" element={
+                    <Route path="/app/*" element={
                         <Authenticated>
-                            <MainApp />
+                            <MainApp showModalDialog={showModalDialog} hideModalDialog={hideModalDialog} />
                         </Authenticated>
                     } />
                     <Route path="/test/*" element={
                         <Test />
-                    } />
-                    <Route path="/channel/*" element={
-                        <Authenticated>
-                            <Channel showModalDialog={showModalDialog} hideModalDialog={hideModalDialog} />
-                        </Authenticated>
                     } />
                 </Routes>
             </BrowserRouter>

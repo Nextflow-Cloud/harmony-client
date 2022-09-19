@@ -2,10 +2,9 @@
     background-color: #0061b4;
     border-radius: 6px;
     content: "";
-    height: 45%;
-    left: -1px;
+    width: 50%;
+    top: 0px;
     position: absolute;
-    top: 28%;
-    width: 3px;
-    /* box-sizing: border-box; */
+    left: calc((65px/2)-(45%/2));
+    height: 3px;
 }

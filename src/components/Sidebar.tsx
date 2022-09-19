@@ -70,7 +70,7 @@ const Sidebar = (props: Props) => {
         }}>
             {/* <div class="top w-full"> */}
                 <div className="description justify-start px-5 py-4 border-b w-full">
-                    <b>Home</b>
+                    <b>{props.elements.find(v => v.id === activeElement)?.text ?? "Error"}</b>
                 </div>
                 {/* <div class="flex flex-col items-start w-full">
                     <div class="logo mb-2 text-lg mx-4 my-2">
@@ -96,8 +96,8 @@ const Sidebar = (props: Props) => {
             {/* </div> */}
             <div className="bottom flex flex-row w-full border-t p-2">
                 {props.elements.map(element => (
-                    <div key={element.id} id={element.id} class={`sidebar-item text-xs flex flex-col items-center hover:bg-gray-200${activeElement === element.id ? " active bg-gray-200" : ""}`} style={{ 
-                        width: "100%",
+                    <div key={element.id} id={element.id} class={`sidebar-item text-xs flex flex-col items-center mx-1 hover:bg-gray-200${activeElement === element.id ? " active bg-gray-200" : ""}`} style={{ 
+                        width: "65px",
                         paddingTop: "8px",
                         paddingBottom: "8px",
                         paddingLeft: "8px",

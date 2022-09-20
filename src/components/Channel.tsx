@@ -8,6 +8,7 @@ import CallConnector from "../routes/CallConnector";
 import Scroller from "./Scroller";
 import { Virtuoso } from "react-virtuoso";
 import { User } from "../utilities/redux/users";
+import { store } from "../utilities/redux/redux";
 
 interface Props {
     profile?: User;
@@ -68,7 +69,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
     //     console.log(cachedUsers);
     // }, [cachedUsers]);
     const fetchUser = async (id?: string) => {
-        if (id && window.internals.userStore.get(id)) return;
+        if (id && store.getState().users[id]) return;
         const request = await fetch(`https://sso.nextflow.cloud/api/user/${id ?? ""}`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -85,10 +86,13 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
                 //         avatar: response.avatar
                 //     }
                 // });
-                window.internals.userStore.set(id, {
-                    id: response.id,
-                    username: response.username,
-                    avatar: response.avatar
+                store.dispatch({
+                    type: "LOAD_USER", 
+                    user: {
+                        id: response.id,
+                        username: response.username,
+                        avatar: response.avatar
+                    }
                 });
             } else {
                 setCurrentUser({
@@ -126,7 +130,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         const msgs = data!.messages as ChannelMessage[];
         for (const msg of msgs) {
             // if (!cachedUsers[msg.authorId])
-            if (!window.internals.userStore.get(msg.authorId))
+            if (!store.getState().users[msg.authorId])
                 await fetchUser(msg.authorId);
         }
         setLoadedMessages(msgs);
@@ -247,15 +251,14 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
                 {loadedMessages.map(message => (
                     <div className="message hover:bg-gray-200 hover:bg-opacity-80 flex flex-col space-x-2 w-full" key={message.id}>
                         <div class="reseau pr-2 pl-20 my-3 relative"> 
-                            <img src={window.internals.userStore.get(message.authorId)?.avatar} className="message-header-avatar w-12 h-12 rounded-full self-start border-slate-400 border-2 left-2 absolute m-2" style={{
+                            <img src={store.getState().users[message.authorId]?.avatar} className="message-header-avatar w-12 h-12 rounded-full self-start border-slate-400 border-2 left-2 absolute m-2" style={{
                                 marginTop: "calc(4px - .25rem)"
                             }} />
                             <div className="flex space-x-2">
                                 <h2><strong className="message-header-name self-start" style={{ 
                                     fontWeight: 500,
                                 }}>
-                                    
-                                    {window.internals.userStore.get(message.authorId)?.username ?? "Unknown user"}
+                                    {store.getState().users[message.authorId]?.username ?? "Unknown user"}
                                 </strong></h2> {/* use lighter font */}
                                 <h2 className="message-header-time self-start" style={{ 
                                     fontWeight: 300,

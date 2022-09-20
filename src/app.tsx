@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Authenticated from "./components/helpers/Authenticated";
 import MainApp from "./routes/MainApp";
-import Test from "./routes/Test";
 import ModalDialog from "./components/ModalDialog";
 import { JSX } from "preact";
 import { useState } from "preact/hooks";
@@ -34,9 +33,6 @@ const App = () => {
                         <Authenticated>
                             <MainApp showModalDialog={showModalDialog} hideModalDialog={hideModalDialog} />
                         </Authenticated>
-                    } />
-                    <Route path="/test/*" element={
-                        <Test />
                     } />
                 </Routes>
             </BrowserRouter>

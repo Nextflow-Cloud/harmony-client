@@ -4,6 +4,8 @@ import MainApp from "./routes/MainApp";
 import ModalDialog from "./components/ModalDialog";
 import { JSX } from "preact";
 import { useState } from "preact/hooks";
+import { Provider } from "react-redux";
+import { store } from "./utilities/redux/redux";
 interface Button {
     text: string;
     id: string;
@@ -21,22 +23,24 @@ const App = () => {
     };
     return (
         <>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={
-                        <Authenticated>
-                            <Navigate to="/app" />
-                            {/* TODO: Navigate to Nextflow information page if not signed in */}
-                        </Authenticated>
-                    } />
-                    <Route path="/app/*" element={
-                        <Authenticated>
-                            <MainApp showModalDialog={showModalDialog} hideModalDialog={hideModalDialog} />
-                        </Authenticated>
-                    } />
-                </Routes>
-            </BrowserRouter>
-            {modalDialog ? modalDialog : <></>}
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={
+                            <Authenticated>
+                                <Navigate to="/app" />
+                                {/* TODO: Navigate to Nextflow information page if not signed in */}
+                            </Authenticated>
+                        } />
+                        <Route path="/app/*" element={
+                            <Authenticated>
+                                <MainApp showModalDialog={showModalDialog} hideModalDialog={hideModalDialog} />
+                            </Authenticated>
+                        } />
+                    </Routes>
+                </BrowserRouter>
+                {modalDialog ? modalDialog : <></>}
+            </Provider>
         </>
     );
 };

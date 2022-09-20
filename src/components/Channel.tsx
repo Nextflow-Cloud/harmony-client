@@ -7,12 +7,7 @@ import expandingTextArea from "../utilities/expandingTextArea";
 import CallConnector from "../routes/CallConnector";
 import Scroller from "./Scroller";
 import { Virtuoso } from "react-virtuoso";
-
-interface User {
-    id: string;
-    username: string;
-    avatar: string;
-}
+import { User } from "../utilities/redux/users";
 
 interface Props {
     profile?: User;
@@ -105,7 +100,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         }
     };
     const establishConnection = async () => {
-        const socket = new ExtendedWebSocket("wss://link1.nextflow.cloud/api/rpc", token);
+        const socket = new ExtendedWebSocket("ws://192.168.0.101:9000/api/rpc", token);
         socket.on("message", (message: WebSocketMessage) => {
             if (message.type === WebSocketCodes.CHANNEL_MESSAGE) {
                 const data = message.data as Record<string, unknown>;
@@ -236,6 +231,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
                     <MoreVertical28Filled className="w-5 h-5 hover:text-green-400 mx-2" /> {/* TODO: onClick and openContextMenu */}
                 </div>
             </div>
+            {/* fixed */}
             {call ? <CallConnector token={token} /> : <></>}
             {/* <Scroller loadingComponent={
                 <div>Loading...</div>

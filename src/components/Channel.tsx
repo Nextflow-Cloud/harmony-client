@@ -1,14 +1,14 @@
 import { Channel28Regular, Call28Filled, MoreVertical28Filled, Send28Regular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "preact/hooks";
-import ExtendedWebSocket, { WebSocketCodes, WebSocketMessage } from "../utilities/ExtendedWebSocket";
-// import LRU from "../utilities/LRU";
-import StyleParser from "./StyleParser";
-import expandingTextArea from "../utilities/expandingTextArea";
 import CallConnector from "../routes/CallConnector";
-import Scroller from "./Scroller";
-import { Virtuoso } from "react-virtuoso";
+import ExtendedWebSocket, { WebSocketCodes, WebSocketMessage } from "../utilities/ExtendedWebSocket";
+import expandingTextArea from "../utilities/expandingTextArea";
 import { User } from "../utilities/redux/users";
+import StyleParser from "./StyleParser";
 import { store } from "../utilities/redux/redux";
+// import { Virtuoso } from "react-virtuoso";
+// import LRU from "../utilities/LRU";
+// import Scroller from "./Scroller";
 
 interface Props {
     profile?: User;
@@ -21,10 +21,6 @@ interface Props {
 }
 
 interface ChannelMessage {
-    // id: string;
-    // message: string;
-    // user: User;
-    // time: string;
     content: string,
     createdAt: number,
     authorId: string,
@@ -104,7 +100,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         }
     };
     const establishConnection = async () => {
-        const socket = new ExtendedWebSocket("ws://192.168.0.101:9000/api/rpc", token);
+        const socket = new ExtendedWebSocket("wss://link1.nextflow.cloud/api/rpc", token);
         socket.on("message", (message: WebSocketMessage) => {
             if (message.type === WebSocketCodes.CHANNEL_MESSAGE) {
                 const data = message.data as Record<string, unknown>;

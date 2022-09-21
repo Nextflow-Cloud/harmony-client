@@ -1,6 +1,6 @@
 import { Channel28Regular, Call28Filled, MoreVertical28Filled, Send28Regular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "preact/hooks";
-import CallConnector from "../routes/CallConnector";
+import CallConnector from "./CallConnector";
 import ExtendedWebSocket, { WebSocketCodes, WebSocketMessage } from "../utilities/ExtendedWebSocket";
 import expandingTextArea from "../utilities/expandingTextArea";
 import { User } from "../utilities/redux/users";

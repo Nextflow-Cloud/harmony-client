@@ -1,17 +1,13 @@
 import { useEffect, useState } from "preact/hooks";
-import Video from "../components/Video";
+import Video from "./Video";
 import Call, { ConsumerData } from "../utilities/Call";
 import { Call24Filled, ShareScreenStart24Filled, CallCheckmark20Filled, CallEnd20Filled, CallConnecting20Filled, MicOff24Filled, Mic24Filled, ShareScreenStop24Filled } from "@fluentui/react-icons";
 import "../tooltips.css";
 import { Producer } from "mediasoup-client/lib/Producer";
-// import { Transport } from "mediasoup-client/lib/Transport";
+import { store } from "../utilities/redux/redux";
+import ExtendedWebSocket from "../utilities/ExtendedWebSocket";
 
-// const useForceUpdate = () => {
-//     const [, setValue] = useState(0);
-//     return () => setValue(value => value + 1);
-// };
-
-const CallConnector = ({ token }: { token: string; }) => {
+const CallConnector = ({ token, socket }: { token: string; socket: ExtendedWebSocket }) => {
     const [call, setCall] = useState<Call>();
     const [connecting, setConnecting] = useState(false);
     const [connected, setConnected] = useState(false);
@@ -31,7 +27,7 @@ const CallConnector = ({ token }: { token: string; }) => {
 
     const connectCall = async () => {
         setConnecting(true);
-        const call = new Call("testing", token, setCallMembers, setVideoTracks);
+        const call = new Call("testing", socket, setCallMembers, setVideoTracks);
         await call.connect();
         setCall(call);
         setConnecting(false);
@@ -89,7 +85,7 @@ const CallConnector = ({ token }: { token: string; }) => {
                 {callMembers && callMembers.map(m => 
                     <div key={m[0]} class="user rounded-md bg-violet-400 w-1/3 m-2 p-4 border relative">
                         <br />
-                        <div class="bottom-4 absolute text-white">{window.internals.userStore.get(m[1])?.username ?? "Unknown user"}</div>
+                        <div class="bottom-4 absolute text-white">{store.getState().users[m[1]]?.username ?? "Unknown user"}</div>
                     </div>
                 )}
                 {/* <div class="user rounded-md bg-violet-400 w-1/3 m-2 p-4 border relative">

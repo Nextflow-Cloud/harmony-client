@@ -24,13 +24,10 @@ class Call {
     callMembers: Map<string, string> = new Map();
     memberStateUpdater: StateUpdater<[string, string][]>;
     videoListStateUpdater: StateUpdater<ConsumerData[]>;
-    constructor(id: string, token: string, memberStateUpdater: StateUpdater<[string, string][]>, videoListStateUpdater: StateUpdater<ConsumerData[]>) {
+    constructor(id: string, socket: ExtendedWebSocket, memberStateUpdater: StateUpdater<[string, string][]>, videoListStateUpdater: StateUpdater<ConsumerData[]>) {
         this.id = id;
         this.device = new Device();
-        // Dev server
-        // this.socket = new ExtendedWebSocket("ws://192.168.0.101:8000", token, { reconnect: true }); //http://localhost:10002 ws://localhost:9050
-        // Production server
-        this.socket = new ExtendedWebSocket("wss://link1.nextflow.cloud", token, { reconnect: true }); //rtc.nextflow.cloud
+        this.socket = socket;
         this.socket.on("message", m => {
             if (m.type === WebSocketCodes.NEW_PRODUCER) {
                 const p = (m.data as Record<string, unknown>).producer as { id: string; kind: "audio" | "video"; };
@@ -118,7 +115,6 @@ class Call {
         }
     }
     async connect() {
-        await this.socket.connect();
         const joinCall = (await this.socket.request({ type: WebSocketCodes.CAPABILITIES, data: { id: this.id } })).data as { 
             rtpCapabilities: RtpCapabilities; 
             callMembers: { userId: string; uniqueId: string; }[]; 

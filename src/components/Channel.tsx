@@ -100,8 +100,10 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         }
     };
     const establishConnection = async () => {
-        const socket = new ExtendedWebSocket("wss://link1.nextflow.cloud/api/rpc", token);
-        socket.on("message", (message: WebSocketMessage) => {
+        let socket = store.getState().socket.socket;
+        if (!socket) {
+            socket = new ExtendedWebSocket("wss://link1.nextflow.cloud/api/rpc", token, { reconnect: true });
+            socket.on("message", (message: WebSocketMessage) => {
             if (message.type === WebSocketCodes.CHANNEL_MESSAGE) {
                 const data = message.data as Record<string, unknown>;
                 const m: ChannelMessage = {
@@ -188,7 +190,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
                 return;
             }
             console.log(`Message: ${message}`);
-            const data = await socket?.request({ type: WebSocketCodes.SEND_CHANNEL_MESSAGE, data: { content: message.trim(), channelId: "1" } });
+            const data = await store.getState().socket.socket?.request({ type: WebSocketCodes.SEND_CHANNEL_MESSAGE, data: { content: message.trim(), channel_id: "1" } });
             if (data) {
                 const { messageId } = data.data as { messageId: string };
                 setLoadedMessages(l => [...l, {

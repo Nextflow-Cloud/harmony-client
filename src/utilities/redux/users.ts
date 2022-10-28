@@ -20,4 +20,4 @@ export const users = (state: Users = {}, action: UsersAction): Users => {
             return state;
         }
     }
-}
+};

@@ -210,42 +210,22 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
             {/* <Virtuoso>
 
             </Virtuoso> */}
-            <div ref={messagesElement} className="messages flex flex-col h-full justify-start overflow-y-scroll" onContextMenu={handleContextMenu} onClick={handleClick}>
+            <div ref={messagesElement} className={`messages flex flex-col h-full justify-start overflow-y-scroll ${darkTheme ? "bg-opacity-20 bg-gray-500 backdrop-blur-lg" : ""}`} onContextMenu={handleContextMenu} onClick={handleClick}>
                 {loadedMessages.map(message => (
-                    <div className="message hover:bg-gray-200 hover:bg-opacity-80 flex flex-col space-x-2 w-full" key={message.id}>
-                        <div class="reseau pr-2 pl-20 my-3 relative"> 
-                            <img src={store.getState().users[message.authorId]?.avatar} className="message-header-avatar w-12 h-12 rounded-full self-start border-slate-400 border-2 left-2 absolute m-2" style={{
-                                marginTop: "calc(4px - .25rem)"
-                            }} />
-                            <div className="flex space-x-2">
-                                <h2><strong className="message-header-name self-start" style={{ 
-                                    fontWeight: 500,
-                                }}>
-                                    {store.getState().users[message.authorId]?.username ?? "Unknown user"}
-                                </strong></h2> {/* use lighter font */}
-                                <h2 className="message-header-time self-start" style={{ 
-                                    fontWeight: 300,
-                                }}>{formatTime(new Date(message.createdAt))}</h2> {/* use lighter font */}
-                                <div className="message-header-options self-start">
-                                    <div className="message-header-right-options-item hover:text-green-400" onClick={() => console.log("Message options clicked")}>
-                                        <MoreVertical28Filled className="w-5 h-5" />
-                                    </div>
-                                </div>
-                            </div>
-                            <p className="message-body text-left whitespace-pre-wrap">
-                                <StyleParser raw={message.content} />
-                            </p>
-                        </div>
-                    </div>
+                    <Message message={message} showModalDialog={showModalDialog} hideModalDialog={hideModalDialog} />
                 ))}
                 
             </div>
-            <div className="input flex self-stretch justify-self-end px-5 py-4 w-full">
+            <div className={`input flex self-stretch justify-self-end px-5 py-4 w-full ${darkTheme ? "bg-opacity-20 bg-gray-500 backdrop-blur-lg" : ""}`}>
                 <textarea onChange={v => {
                     setMessage((v.target as HTMLTextAreaElement).value);
-                    expandingTextArea(v.target as HTMLTextAreaElement, { maxLines: 10 });
-                }} onKeyPress={handleKeypress} value={message} type="text" placeholder="Type a message..." className="w-full h-12 px-4 py-2 border-2 rounded-md border-slate-300" id="message-input" />
-                <div className="self-center mx-5 px-5 py-3 rounded-md hover:opacity-80 hover:bg-slate-200 hover:text-green-400 border-slate-200 border-2 h-12 flex justify-center items-center" onClick={send}> 
+                    // expandingTextArea(v.target as HTMLTextAreaElement, { maxLines: 10 });
+                }} onKeyPress={handleKeypress} value={message} type="text" placeholder="Type a message..." className={`${darkTheme ? "backdrop-blur-sm bg-gray-300 bg-opacity-20 border-slate-200 border-opacity-40 text-gray-300" : "border-slate-200"} w-full h-12 px-4 py-2 border-2 rounded-md focus:outline-none`} id="message-input"
+                style={{
+                    minHeight: "calc(16px + 2rem)",
+                    maxHeight: "calc((16px*10) + 2rem)"
+                }} />
+                <div className={`self-center mx-5 px-5 py-3 rounded-md hover:opacity-80 hover:bg-slate-200 hover:text-green-400 border-2 h-12 flex justify-center items-center ${darkTheme ? "text-gray-300 border-slate-200 border-opacity-40" : "border-slate-200"}`} onClick={send}> 
                     <Send28Regular className="w-5 h-5" />
                 </div>
             </div>

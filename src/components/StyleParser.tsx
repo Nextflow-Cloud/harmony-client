@@ -1,6 +1,45 @@
 import { Interweave } from "interweave";
 
-const StyleParser = ({ raw }: { raw: string; }) => {
+const StyleParser = ({ raw, showModalDialog, hideModalDialog }: { 
+    raw: string,
+    showModalDialog: (title: string, message: string, buttons: { text: string; id: string; primary?: boolean }[], callback: (button: string) => void) => void,
+    hideModalDialog: () => void,
+}) => {
+    const handleLink = (e: MouseEvent, url?: string) => {
+        e.preventDefault();
+        if (url) {
+            if (new URL(url).host.endsWith("nextflow.cloud")) {
+                open(url, "_blank");
+                return;
+            }
+            showModalDialog(
+                "Attention", 
+                "You are about to visit an external webpage. Please be cautious for deceptive or malicious links. Proceed to suspicious links only if you know what you are doing. Are you sure you would like to continue?", 
+                [{
+                    text: "Yes, continue",
+                    id: "yes",
+                    primary: true
+                }, {
+                    text: "No, go back",
+                    id: "no"
+                }], 
+                button => {
+                    if (button === "yes") {
+                        open(url, "_blank");
+                    }
+                    hideModalDialog();
+                }
+            );
+        }
+    };
+    const transform = (node: HTMLElement, children: Node[]) => {
+        if (node.tagName === "A") {
+            return <a href={node.getAttribute("href") ?? undefined} target="_blank" style={{
+                color: "#5995ed",
+            }} onClick={e => handleLink(e, node.getAttribute("href") ?? undefined)}>{children}</a>;
+        }
+    }
+
     const parse = (raw: string): string => {
         raw = raw
             .replace(/&/g, "&amp;")
@@ -46,7 +85,7 @@ const StyleParser = ({ raw }: { raw: string; }) => {
 
     return (
         <>
-            <Interweave content={parse(raw)} />
+            <Interweave content={parse(raw)} transform={transform} />
         </>
     );
 

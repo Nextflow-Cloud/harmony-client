@@ -1,4 +1,5 @@
 import ExtendedWebSocket from "./ExtendedWebSocket";
+import { store } from "./redux/redux";
 
 class Internals {
     ExtendedWebSocket = ExtendedWebSocket;
@@ -10,6 +11,10 @@ class Internals {
 
     fetchFlag(k: string) {
         return this.flags[k];
+    }
+
+    getState() {
+        return store.getState();
     }
 }
 

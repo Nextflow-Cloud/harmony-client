@@ -19,9 +19,10 @@ interface Props {
     // eslint-disable-next-line no-unused-vars
     showModalDialog: (title: string, message: string, buttons: { text: string; id: string; primary?: boolean }[], callback: (button: string) => void) => void;
     hideModalDialog: () => void;
+    setSidebarContents: StateUpdater<JSX.Element | undefined>
 }
 
-interface ChannelMessage {
+export interface ChannelMessage {
     content: string,
     createdAt: number,
     authorId: string,
@@ -31,7 +32,7 @@ interface ChannelMessage {
     channelId: string
 }
 
-const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalDialog, hideModalDialog }: Props) => {
+const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalDialog, hideModalDialog, setSidebarContents }: Props) => {
     const [currentUser, setCurrentUser] = useState<User>({ id: "1", username: "John Doe", avatar: "https://avatars0.githubusercontent.com/u/17098281?s=460&u=e8d9c9f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8&v=4" });
     const messagesElement = useRef<HTMLDivElement>(null);
     const [message, setMessage] = useState("");
@@ -43,6 +44,17 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
     const darkTheme = useAppSelector(state => state.preferences.theme === "dark", shallowEqual);
 
     useEffect(() => {
+        setSidebarContents(
+            <div class="flex flex-col">
+                <div class="user rounded-md border my-1 p-2">
+                    hi 1
+                </div>
+                <div class="user rounded-md border my-1 p-2">
+                    hi 2
+                </div>
+            </div>
+        );
+        let x = false;
         const observer = new MutationObserver(events => {
             const target = events[0].target as HTMLDivElement;
             target.scroll({ top: target.scrollHeight, behavior: !x ? void 0 : "smooth" });

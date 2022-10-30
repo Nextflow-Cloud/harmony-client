@@ -39,8 +39,9 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
     // const [isTyping, setIsTyping] = useState(false);
     const [call, setCall] = useState(false);
     const [loadedMessages, setLoadedMessages] = useState<ChannelMessage[]>([]);
-    // const [cachedUsers, setCachedUsers] = useState<LRU<User>>(new LRU(50));
-    const [socket, setSocket] = useState<ExtendedWebSocket>();
+    
+    const darkTheme = useAppSelector(state => state.preferences.theme === "dark", shallowEqual);
+
     useEffect(() => {
         const observer = new MutationObserver(events => {
             const target = events[0].target as HTMLDivElement;
@@ -180,16 +181,17 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
     const handleClick = () => {};
     const handleKeypress = (e: KeyboardEvent) => {
         if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
             send();
         }
     };
     return (
         <div className="conversation flex flex-col self-stretch w-full h-full min-h-0 overflow-hidden">
-            <div className="description flex justify-start px-5 py-4 border-b w-full items-center">
+            <div className={`description flex justify-start px-5 py-4 border-b w-full items-center ${darkTheme ? "bg-opacity-20 bg-gray-700 backdrop-blur-lg text-gray-300" : ""}`}>
                 <Channel28Regular className="w-5 h-5 mr-2" />
                 <div className="space-x-3 w-full">
                     <b>hello</b>
-                    <span className="text-gray-600 text-sm">A testing channel.</span>
+                    <span className={`text-sm  ${darkTheme ? "text-gray-400" : "text-gray-600"}`}>A testing channel.</span>
                 </div>
                 <div className="justify-self-end flex flex-row">
                     {call ? <></> : <Call28Filled className="w-5 h-5 hover:text-green-400 mx-2" onClick={joinCall} />}

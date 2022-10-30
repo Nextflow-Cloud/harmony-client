@@ -1,4 +1,5 @@
 import { CombinedState, combineReducers, legacy_createStore as createStore } from "redux";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import { Preferences, preferences, PreferencesAction } from "./preferences";
 import { Socket, socket, SocketAction } from "./socket";
@@ -29,3 +30,9 @@ export const store = createStore((state: CombinedState<State> | undefined, actio
 
     return all(state, action);
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

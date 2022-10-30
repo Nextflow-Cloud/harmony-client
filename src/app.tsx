@@ -19,8 +19,11 @@ const App = () => {
         setModalDialog(<ModalDialog title={title} content={content} buttons={buttons} onClose={onClose} />);
     };
     const hideModalDialog = () => {
-        setModalDialog(undefined);
+        setTimeout(() => {
+            setModalDialog(undefined);
+        }, 500);
     };
+
     return (
         <>
             <Provider store={store}>

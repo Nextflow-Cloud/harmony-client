@@ -16,6 +16,15 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+@media (prefers-color-scheme: dark) {
+    body {
+        background-image: url(https://images.unsplash.com/photo-1638272181967-7d3772a91265?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb);
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+    }
+}
+
 * {
     box-sizing: border-box;
 }
@@ -34,4 +43,31 @@ body {
 
 .link {
     color: #fff;
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0%;
+    }
+    100% {
+        opacity: 100%;
+    }
+}
+
+@keyframes fadeout {
+    0% {
+        opacity: 100%;
+    }
+    100% {
+        opacity: 0%;
+    }
+}
+
+.fadein {
+    animation: fadein 0.5s;
+}
+
+.fadeout {
+    animation: fadeout 0.5s;
+    animation-fill-mode: forwards;
 }

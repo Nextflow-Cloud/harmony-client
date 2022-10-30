@@ -1,11 +1,12 @@
 import { Channel28Regular, Call28Filled, MoreVertical28Filled, Send28Regular } from "@fluentui/react-icons";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { StateUpdater, useEffect, useRef, useState } from "preact/hooks";
 import CallConnector from "./CallConnector";
 import ExtendedWebSocket, { WebSocketCodes, WebSocketMessage } from "../utilities/ExtendedWebSocket";
-import expandingTextArea from "../utilities/expandingTextArea";
 import { User } from "../utilities/redux/users";
-import StyleParser from "./StyleParser";
-import { store } from "../utilities/redux/redux";
+import { store, useAppSelector } from "../utilities/redux/redux";
+import Message from "./Message";
+import { shallowEqual } from "react-redux";
+// import expandingTextArea from "../utilities/expandingTextArea";
 // import { Virtuoso } from "react-virtuoso";
 // import LRU from "../utilities/LRU";
 // import Scroller from "./Scroller";
@@ -73,15 +74,6 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         });
         if (request.ok) {
             const response = await request.json();
-            if (id) {
-                // setCachedUsers({
-                //     ...cachedUsers, 
-                //     [id]: {
-                //         id: response.id,
-                //         username: response.username,
-                //         avatar: response.avatar
-                //     }
-                // });
                 store.dispatch({
                     type: "LOAD_USER", 
                     user: {
@@ -90,7 +82,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
                         avatar: response.avatar
                     }
                 });
-            } else {
+            if (!id) {
                 setCurrentUser({
                     id: response.id,
                     username: response.username,
@@ -103,72 +95,62 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         let socket = store.getState().socket.socket;
         if (!socket) {
             socket = new ExtendedWebSocket("wss://link1.nextflow.cloud/api/rpc", token, { reconnect: true });
-            socket.on("message", (message: WebSocketMessage) => {
-            if (message.type === WebSocketCodes.CHANNEL_MESSAGE) {
-                const data = message.data as Record<string, unknown>;
+            socket.on("message", async (message: WebSocketMessage) => {
+                if (message.type === WebSocketCodes.NEW_CHANNEL_MESSAGE) {
+                    const data = message.data as { message: Record<string, unknown>; channel_id: string; };
                 const m: ChannelMessage = {
-                    content: data.content as string,
-                    createdAt: data.createdAt as number,
-                    authorId: data.authorId as string,
-                    edited: data.edited as boolean,
-                    editedAt: data.editedAt as number | undefined,
-                    id: data.id as string,
-                    channelId: data.channelId as string
+                        content: data.message.content as string,
+                        createdAt: data.message.created_at as number,
+                        authorId: data.message.author_id as string,
+                        edited: data.message.edited as boolean,
+                        editedAt: data.message.edited_at as number | undefined,
+                        id: data.message.id as string,
+                        channelId: data.channel_id as string
                 };
+                    if (!store.getState().users[m.authorId])
+                        await fetchUser(m.authorId);
                 setLoadedMessages(l => [...l, m]);
             }
         });
+            try {
         Object.defineProperty(window, "socket", {
             value: socket,
             writable: false,
             configurable: false
         });
+            } catch {}
         await socket.connect();
-        const { data } = await socket.request({ type: WebSocketCodes.GET_CHANNEL_MESSAGES, data: { channelId: "1" } });
-        const msgs = data!.messages as ChannelMessage[];
-        for (const msg of msgs) {
-            // if (!cachedUsers[msg.authorId])
-            if (!store.getState().users[msg.authorId])
-                await fetchUser(msg.authorId);
+            store.dispatch({
+                type: "SET_SOCKET", 
+                socket
+            });
         }
-        setLoadedMessages(msgs);
-        setSocket(socket);
-    };
-    const formatTime = (time: Date) => {
-        const isYesterday = (time: Date) => {
-            const today = new Date();
-            const yesterday = new Date(today.getTime() - (24 * 60 * 60 * 1000));
-            const date = new Date(time);
-            return date.getDate() === yesterday.getDate() && date.getMonth() === yesterday.getMonth() && date.getFullYear() === yesterday.getFullYear();
+        const channelId = "1";
+        const { data } = await socket.request({ type: WebSocketCodes.GET_CHANNEL_MESSAGES, data: { channel_id: channelId } });
+        const msgs = data!.messages as {
+            id: string;
+            content: string;
+            author_id: string;
+            created_at: number;
+            edited: boolean;
+            edited_at: number | null;
+        }[];
+        for (const msg of msgs) {
+            // TODO: Fetch user correctly and fix SSO bug
+            if (!store.getState().users[msg.author_id])
+                await fetchUser(msg.author_id);
+        }
+        setLoadedMessages(msgs.map(m => ({ 
+            id: m.id, 
+            authorId: m.author_id, 
+            channelId, 
+            content: m.content, 
+            createdAt: m.created_at, 
+            edited: m.edited, 
+            editedAt: m.edited_at ?? undefined
+        })).reverse());
         };
 
-        const date = new Date(time);
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-        const seconds = date.getSeconds().toString().padStart(2, "0");
-
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth().toString().padStart(2, "0");
-        const currentDay = currentDate.getDate().toString().padStart(2, "0");
-        const currentYear = currentDate.getFullYear().toString().padStart(4, "0");
-
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const year = date.getFullYear().toString().padStart(4, "0");
-
-        const dateFormatted = `${month}/${day}/${year}`;
-        const timeFormatted = `${hours}:${minutes}:${seconds}`;
-
-        const currentDateFormatted = `${currentMonth}/${currentDay}/${currentYear}`;
-
-        if (dateFormatted === currentDateFormatted) {
-            return `Today at ${timeFormatted}`;
-        } else if (isYesterday(time)) {
-            return `Yesterday at ${timeFormatted}`;
-        } 
-        return `${dateFormatted} at ${timeFormatted}`;
-        
-    };
     const joinCall = () => {
         // showModalDialog(
         //     "Information", 
@@ -192,23 +174,6 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
             console.log(`Message: ${message}`);
             const data = await store.getState().socket.socket?.request({ type: WebSocketCodes.SEND_CHANNEL_MESSAGE, data: { content: message.trim(), channel_id: "1" } });
             if (data) {
-                const { messageId } = data.data as { messageId: string };
-                setLoadedMessages(l => [...l, {
-                    // id: "1" + Date.now(),
-                    // message: message,
-                    // user: {
-                    //     id: currentUser.id,
-                    //     username: currentUser.username,
-                    //     avatar: currentUser.avatar
-                    // },
-                    // time: new Date().toISOString()
-                    id: messageId,
-                    content: message.trim(),
-                    authorId: currentUser.id,
-                    channelId: "1",
-                    createdAt: Date.now(),
-                    edited: false
-                }]);
                 setMessage("");
             }
         }
@@ -233,8 +198,8 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
                     <MoreVertical28Filled className="w-5 h-5 hover:text-green-400 mx-2" /> {/* TODO: onClick and openContextMenu */}
                 </div>
             </div>
-            {/* fixed */}
-            {call ? <CallConnector token={token} /> : <></>}
+            
+            {call ? <CallConnector token={token} socket={store.getState().socket.socket!} /> : <></>}
             {/* <Scroller loadingComponent={
                 <div>Loading...</div>
             } nextDataFn={() => {

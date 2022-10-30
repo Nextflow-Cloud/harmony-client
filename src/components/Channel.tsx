@@ -62,9 +62,7 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
             observer.disconnect();
         };
     }, []);
-    // useEffect(() => {
-    //     console.log(cachedUsers);
-    // }, [cachedUsers]);
+    
     const fetchUser = async (id?: string) => {
         if (id && store.getState().users[id]) return;
         const request = await fetch(`https://sso.nextflow.cloud/api/user/${id ?? ""}`, {

@@ -45,11 +45,12 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
     useEffect(() => {
         const observer = new MutationObserver(events => {
             const target = events[0].target as HTMLDivElement;
-            target.scroll({ top: target.scrollHeight, behavior: "smooth" });
+            target.scroll({ top: target.scrollHeight, behavior: !x ? void 0 : "smooth" });
+            x = true;
         });
         if (messagesElement.current) {
             observer.observe(messagesElement.current, { childList: true });
-            (messagesElement.current as HTMLDivElement).scroll({ top: (messagesElement.current as HTMLDivElement).scrollHeight, behavior: "smooth" });
+            (messagesElement.current as HTMLDivElement).scroll({ top: (messagesElement.current as HTMLDivElement).scrollHeight });
         }
         const textarea = document.getElementById("message-input") as HTMLElement;
         const heightLimit = 200;

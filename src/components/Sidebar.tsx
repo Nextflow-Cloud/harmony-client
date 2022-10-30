@@ -1,4 +1,7 @@
+import { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
+import { shallowEqual } from "react-redux";
+import { useAppSelector } from "../utilities/redux/redux";
 
 interface SidebarElement {
     id: string;
@@ -13,11 +16,14 @@ interface Props {
     setActiveElement: (id: string) => void;
     // topElements: SidebarElement[];
     elements: SidebarElement[];
+    children: ComponentChildren;
 }
 
 const Sidebar = (props: Props) => {
     const [activeElement, setActiveElement] = useState<string>(props.activeElement);
     const [downElement, setDownElement] = useState<string>();
+
+    const darkTheme = useAppSelector(state => state.preferences.theme === "dark", shallowEqual);
 
     useEffect(() => {
         if (downElement)
@@ -42,13 +48,13 @@ const Sidebar = (props: Props) => {
             }
             if (activeElement) {
                 const oldElement = document.getElementById(activeElement) as HTMLDivElement;
-                oldElement.classList.remove("active");
+                if (oldElement) oldElement.classList.remove("active");
             }
             setActiveElement(props.activeElement);
         }
     }, [props.activeElement]);
     return (
-        <div id="sidebar" style={{
+        <div id="sidebar" class={`flex-shrink ${darkTheme ? "text-gray-400 backdrop-blur-sm bg-gray-700 bg-opacity-20" : ""}`} style={{
             borderRadius: "4px",
             boxShadow: "0px 0px 4px rgba(0,0,0,0.25)",
             // padding: "10px",
@@ -68,35 +74,15 @@ const Sidebar = (props: Props) => {
             alignItems: "start",
             margin: "0",
         }}>
-            {/* <div class="top w-full"> */}
-                <div className="description justify-start px-5 py-4 border-b w-full">
-                    <b>{props.elements.find(v => v.id === activeElement)?.text ?? "Error"}</b>
-                </div>
-                {/* <div class="flex flex-col items-start w-full">
-                    <div class="logo mb-2 text-lg mx-4 my-2">
-                        <b>Activity</b>
-                    </div>
-                    {props.topElements.map(element => (
-                        <div key={element.id} id={element.id} class={`sidebar-item space-x-3 text-sm flex hover:bg-gray-200${activeElement === element.id ? " active bg-gray-200" : ""}`} style={{ 
-                            width: "100%",
-                            paddingTop: "8px",
-                            paddingBottom: "8px",
-                            paddingLeft: "8px",
-                            paddingRight: "8px",
-                            borderRadius: "5px",
-                            position: "relative",
-                            marginTop: "2px",
-                            marginBottom: "2px"
-                        }} onMouseDown={() => setDownElement(element.id)} onClick={() => props.setActiveElement(element.id)}>
-                            {element.icon}
-                            <span style={{ userSelect: "none" }} class="item-name">{element.text}</span>
-                        </div>
-                    ))}
-                </div> */}
-            {/* </div> */}
+            <div className="description justify-start px-5 py-4 border-b w-full">
+                <b>{props.elements.find(v => v.id === activeElement)?.text ?? "Error"}</b>
+            </div>
+            <div class="h-full w-full px-5 py-2">
+                {props.children}
+            </div>
             <div className="bottom flex flex-row w-full border-t p-2">
                 {props.elements.map(element => (
-                    <div key={element.id} id={element.id} class={`sidebar-item text-xs flex flex-col items-center mx-1 hover:bg-gray-200${activeElement === element.id ? " active bg-gray-200" : ""}`} style={{ 
+                    <div key={element.id} id={element.id} class={`sidebar-item text-xs flex flex-col items-center mx-1 ${darkTheme ? "hover:bg-gray-400 hover:bg-opacity-50" : "hover:bg-gray-200"} ${activeElement === element.id ? (darkTheme ? " active bg-gray-800 bg-opacity-50" : " active bg-gray-200") : ""}`} style={{ 
                         width: "65px",
                         paddingTop: "8px",
                         paddingBottom: "8px",

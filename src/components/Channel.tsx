@@ -86,14 +86,14 @@ const Channel = ({ profile, token, openContextMenu, closeContextMenu, showModalD
         });
         if (request.ok) {
             const response = await request.json();
-                store.dispatch({
-                    type: "LOAD_USER", 
-                    user: {
-                        id: response.id,
-                        username: response.username,
-                        avatar: response.avatar
-                    }
-                });
+            store.dispatch({
+                type: "LOAD_USER",
+                user: {
+                    id: response.id,
+                    username: response.username,
+                    avatar: response.avatar
+                }
+            });
             if (!id) {
                 setCurrentUser({
                     id: response.id,

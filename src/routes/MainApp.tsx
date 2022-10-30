@@ -1,9 +1,11 @@
-import { useEffect, useState } from "preact/hooks";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useContext, useEffect, useReducer, useState } from "preact/hooks";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
 import { Chat20Regular, Group20Regular, Home20Regular, Settings20Regular } from "@fluentui/react-icons";
 import Sidebar from "../components/Sidebar";
 import Channel from "../components/Channel";
+import Loading from "../components/Loading";
+import { useAppDispatch, useAppSelector } from "../utilities/redux/redux";
 
 interface Button {
     text: string;
@@ -38,47 +40,65 @@ interface Props {
 }
 
 const MainApp = ({ showModalDialog, hideModalDialog }: Props) => {
-    const [activeElement, setActiveElement] = useState("home");
+    const [activeElement, setActiveElement] = useState(location.pathname.split("/")[2]);
+    const [sidebarContents, setSidebarContents] = useState<JSX.Element>();
+    const [loading, setLoading] = useState(true);
+    // const x = useContext<string>("")
+    // useReducer
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const elementIds = elements.map(k => k.id);
-        const loc = location.pathname.split("/");
-        if (loc.length < 3) 
-            return navigate("/app/home");
-        if (!elementIds.includes(loc[2].toLowerCase()))
-            return navigate("/app/home");
-        if (loc.length > 3)
-            return navigate(`/app/${loc[2].toLowerCase()}`);
-        setActiveElement(loc[2].toLowerCase());
-    }, []);
+    useEffect(() => setLoading(false));
+
     useEffect(() => {
         navigate(`/app/${activeElement}`);
     }, [activeElement]);
+
     useEffect(() => {
-        const elementIds = elements.map(k => k.id);
-        const loc = location.pathname.split("/");
-        if (loc.length < 3) 
-            return navigate("/app/home");
-        if (!elementIds.includes(loc[2].toLowerCase()))
-            return navigate("/app/home");
-        if (loc.length > 3)
-            return navigate(`/app/${loc[2].toLowerCase()}`);
-        setActiveElement(loc[2].toLowerCase());
+        const path = location.pathname.split("/")[2];
+        const e = elements.map(k => k.id).includes(path) ? path : "home";
+        setActiveElement(e);
     }, [location.pathname]);
     
+    const themeSystem = useAppSelector(state => state.preferences.themeSystem);
+    const dispatch = useAppDispatch();
+
+    const handle = useCallback((e: MediaQueryListEvent) => themeSystem && dispatch({
+        type: "UPDATE_PREFERENCES",
+        preferences: {
+            theme: e.matches ? "dark" : "light"
+        }
+    }), [themeSystem]);
+
+    useEffect(() => {
+        const match = window.matchMedia("(prefers-color-scheme: dark)");
+        match.addEventListener("change", handle);
+        return () => match.removeEventListener("change", handle);
+    }, []);
+    
     return (
-        <div class="flex flex-row w-full h-full">
-            <Sidebar defaultElement="home" activeElement={activeElement} setActiveElement={setActiveElement} elements={elements} />
-            <Channel
-                // profile={{ id: "aaa", username: "aaa", avatar: "https://avatars0.githubusercontent.com/u/17098281?s=460&u=e8d9c9f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8&v=4" }} 
-                token={getCookie("token") ?? ""}
-                openContextMenu={() => {}} 
-                closeContextMenu={() => {}}
-                showModalDialog={showModalDialog}
-                hideModalDialog={hideModalDialog} 
-            />
-        </div>
+        <>
+            {loading && <Loading />}
+            <div class="flex flex-row w-full h-full">
+                <Sidebar defaultElement="home" activeElement={activeElement} setActiveElement={setActiveElement} elements={elements}>
+                    {sidebarContents}
+                </Sidebar>
+                <Routes>
+                    <Route path="/" element={
+                        <Navigate to="/home" />
+                    } />
+                    <Route path="/messages" element={
+                        <Channel 
+                            token={getCookie("token") ?? ""}
+                            openContextMenu={() => {}} 
+                            closeContextMenu={() => {}}
+                            showModalDialog={showModalDialog}
+                            hideModalDialog={hideModalDialog} 
+                            setSidebarContents={setSidebarContents}
+                        />
+                    } />
+                </Routes>
+            </div>
+        </>
     );
 };
 

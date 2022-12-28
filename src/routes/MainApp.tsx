@@ -1,11 +1,15 @@
-import { useCallback, useContext, useEffect, useReducer, useState } from "preact/hooks";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "preact/hooks";
+import { Navigate, Route, Routes } from "react-router-dom";
 
-import { Chat20Regular, Group20Regular, Home20Regular, Settings20Regular } from "@fluentui/react-icons";
 import Sidebar from "../components/Sidebar";
 import Channel from "../components/Channel";
 import Loading from "../components/Loading";
 import { useAppDispatch, useAppSelector } from "../utilities/redux/redux";
+import { Client } from "../utilities/lib/Client";
+import useClient from "../hooks/useClient";
+import styled from "styled-components";
+import ContentContainer from "../components/ContentContainer";
+import Home from "../components/Home";
 
 interface Button {
     text: string;
@@ -31,6 +35,12 @@ interface Props {
 const MainApp = ({ showModalDialog, hideModalDialog }: Props) => {
     const [loading, setLoading] = useState(true);
 
+    const client = useClient();
+
+    useEffect(() => {
+        establishConnection();
+        return () => client?.destroy();
+    }, []);
     
     const themeSystem = useAppSelector(state => state.preferences.themeSystem);
     const dispatch = useAppDispatch();
@@ -41,6 +51,26 @@ const MainApp = ({ showModalDialog, hideModalDialog }: Props) => {
             theme: e.matches ? "dark" : "light"
         }
     }), [themeSystem]);
+
+    const establishConnection = async () => {
+        if (!client) {
+            const client = new Client("wss://test.nextflow.cloud");
+            await client.connect(getCookie("token") ?? "");
+            try {
+                Object.defineProperty(window, "client", {
+                    value: client,
+                    writable: false,
+                    configurable: false
+                });
+            } catch {}
+            dispatch({
+                type: "SET_CLIENT", 
+                client,
+            });
+            await client.fetchChannels();
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         const match = window.matchMedia("(prefers-color-scheme: dark)");

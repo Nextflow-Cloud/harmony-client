@@ -1,4 +1,4 @@
-import ExtendedWebSocket from "./ExtendedWebSocket";
+import ExtendedWebSocket from "./lib/helpers/ExtendedWebSocket";
 import { store } from "./redux/redux";
 
 class Internals {

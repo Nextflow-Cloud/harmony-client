@@ -1,6 +1,9 @@
 class LRU<T> {
     constructor(private maxEntries = 20) {}
     private values: Map<string, T> = new Map<string, T>();
+    public has(key: string): boolean {
+        return this.values.has(key);
+    }
     public get(key: string): T | undefined {
         const hasKey = this.values.has(key);
         let entry: T | undefined;
@@ -18,6 +21,9 @@ class LRU<T> {
         }
         this.values.set(key, value);
     }
+    public delete(key: string) {
+        return this.values.delete(key);
+    }
 }
 
-export default LRU;
+export { LRU };

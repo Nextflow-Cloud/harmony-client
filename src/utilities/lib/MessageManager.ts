@@ -1,6 +1,6 @@
 import { Channel } from "./Channel";
 import { WebSocketCodes } from "./helpers/ExtendedWebSocket";
-import LRU from "./helpers/LRU";
+import { LRU } from "./helpers/LRU";
 import Message, { MessageContent, MessageData } from "./Message";
 
 interface MessageFetchOptions {

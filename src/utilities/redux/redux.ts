@@ -1,23 +1,20 @@
 import { CombinedState, combineReducers, legacy_createStore as createStore } from "redux";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
+import { Client, client, ClientAction } from "./client";
 import { Preferences, preferences, PreferencesAction } from "./preferences";
-import { Socket, socket, SocketAction } from "./socket";
-import { Users, users, UsersAction } from "./users";
 
 export const all = combineReducers({
+    client,
     preferences,
-    socket,
-    users,
 });
 
 export type State = {
+    client: Client,
     preferences: Preferences;
-    socket: Socket;
-    users: Users;
 };
 
-export type Action = PreferencesAction | SocketAction | UsersAction | { type: "INITIAL"; state: State };
+export type Action = ClientAction | PreferencesAction | { type: "INITIAL"; state: State };
 
 export const store = createStore((state: CombinedState<State> | undefined, action: Action) => {
     if (import.meta.env.DEV) {

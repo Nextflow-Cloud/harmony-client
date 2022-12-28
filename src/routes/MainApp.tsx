@@ -104,14 +104,12 @@ const MainApp = ({ showModalDialog, hideModalDialog }: Props) => {
                     <Route path="/settings" element={
                         <ContentContainer />
                     } />
-                    <Route path="/messages" element={
+                    <Route path="/channels/:channel" element={
                         <Channel 
-                            token={getCookie("token") ?? ""}
                             openContextMenu={() => {}} 
                             closeContextMenu={() => {}}
                             showModalDialog={showModalDialog}
                             hideModalDialog={hideModalDialog} 
-                            setSidebarContents={setSidebarContents}
                         />
                     } />
                 </Routes>

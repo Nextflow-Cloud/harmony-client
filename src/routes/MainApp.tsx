@@ -13,23 +13,12 @@ interface Button {
     primary?: boolean;
 }
 
-const elements = [{
-    icon: <Home20Regular />,
-    text: "Home",
-    id: "home"
-}, {
-    icon: <Chat20Regular />,
-    text: "Messages",
-    id: "messages"
-}, {
-    icon: <Group20Regular />,
-    text: "Spaces",
-    id: "spaces"
-}, {
-    icon: <Settings20Regular />,
-    text: "Settings",
-    id: "settings"
-}];
+const AppContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+`;
 
 const getCookie = (name: string) => document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`)?.pop();
 
@@ -40,24 +29,8 @@ interface Props {
 }
 
 const MainApp = ({ showModalDialog, hideModalDialog }: Props) => {
-    const [activeElement, setActiveElement] = useState(location.pathname.split("/")[2]);
-    const [sidebarContents, setSidebarContents] = useState<JSX.Element>();
     const [loading, setLoading] = useState(true);
-    // const x = useContext<string>("")
-    // useReducer
-    const navigate = useNavigate();
 
-    useEffect(() => setLoading(false));
-
-    useEffect(() => {
-        navigate(`/app/${activeElement}`);
-    }, [activeElement]);
-
-    useEffect(() => {
-        const path = location.pathname.split("/")[2];
-        const e = elements.map(k => k.id).includes(path) ? path : "home";
-        setActiveElement(e);
-    }, [location.pathname]);
     
     const themeSystem = useAppSelector(state => state.preferences.themeSystem);
     const dispatch = useAppDispatch();
@@ -78,13 +51,28 @@ const MainApp = ({ showModalDialog, hideModalDialog }: Props) => {
     return (
         <>
             {loading && <Loading />}
-            <div class="flex flex-row w-full h-full">
-                <Sidebar defaultElement="home" activeElement={activeElement} setActiveElement={setActiveElement} elements={elements}>
-                    {sidebarContents}
-                </Sidebar>
+            {!loading && <AppContainer>
+                <Sidebar />
                 <Routes>
                     <Route path="/" element={
-                        <Navigate to="/home" />
+                        <Navigate to="/app/home" />
+                    } />
+                    <Route path="/home" element={
+                        <Home />
+                    } />
+                    <Route path="/channels" element={
+                        <Channel 
+                            openContextMenu={() => {}} 
+                            closeContextMenu={() => {}}
+                            showModalDialog={showModalDialog}
+                            hideModalDialog={hideModalDialog} 
+                        />
+                    } />
+                    <Route path="/spaces" element={
+                        <ContentContainer />
+                    } />
+                    <Route path="/settings" element={
+                        <ContentContainer />
                     } />
                     <Route path="/messages" element={
                         <Channel 
@@ -97,7 +85,7 @@ const MainApp = ({ showModalDialog, hideModalDialog }: Props) => {
                         />
                     } />
                 </Routes>
-            </div>
+            </AppContainer>}
         </>
     );
 };

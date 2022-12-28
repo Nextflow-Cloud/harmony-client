@@ -1,7 +1,6 @@
 import { render } from "preact";
 import App from "./app";
 import "./index.css";
-import "./sidebar.css";
 
 import Internals from "./utilities/Internals";
 const internals = new Internals();

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Authenticated from "./components/helpers/Authenticated";
 import MainApp from "./routes/MainApp";
 import ModalDialog from "./components/ModalDialog";
@@ -6,6 +6,7 @@ import { JSX } from "preact";
 import { useState } from "preact/hooks";
 import { Provider } from "react-redux";
 import { store } from "./utilities/redux/redux";
+import { Context } from "./components/helpers/Context";
 interface Button {
     text: string;
     id: string;
@@ -27,7 +28,7 @@ const App = () => {
     return (
         <>
             <Provider store={store}>
-                <BrowserRouter>
+                <Context>
                     <Routes>
                         <Route path="/" element={
                             <Authenticated>
@@ -41,7 +42,7 @@ const App = () => {
                             </Authenticated>
                         } />
                     </Routes>
-                </BrowserRouter>
+                </Context>
                 {modalDialog ? modalDialog : <></>}
             </Provider>
         </>

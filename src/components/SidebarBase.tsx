@@ -1,4 +1,9 @@
-import { Chat20Regular, Group20Regular, Home20Regular, Settings20Regular } from "@fluentui/react-icons";
+import {
+    Chat20Regular,
+    Group20Regular,
+    Home20Regular,
+    Settings20Regular,
+} from "@fluentui/react-icons";
 import { ComponentChildren } from "preact";
 import { useMemo } from "preact/hooks";
 import { useNavigate } from "react-router-dom";
@@ -42,20 +47,27 @@ const SidebarElement = styled.div`
     margin-left: 0.25rem;
     margin-right: 0.25rem;
     :hover {
-        ${props => props.darkTheme ? css`
-            background-color: rgb(156 163 175 / 0.5);
-        ` : css`
-            background-color: rgb(229 231 235);
-        `}
+        ${(props) =>
+            props.darkTheme
+                ? css`
+                      background-color: rgb(156 163 175 / 0.5);
+                  `
+                : css`
+                      background-color: rgb(229 231 235);
+                  `}
     }
     :active {
         opacity: 0.5;
     }
-    ${props => props.active && (props.darkTheme ? css`
-        background-color: rgb(31 41 55 / 0.5);
-    ` : css`
-        background-color: rgb(229 231 235);
-    `)}
+    ${(props) =>
+        props.active &&
+        (props.darkTheme
+            ? css`
+                  background-color: rgb(31 41 55 / 0.5);
+              `
+            : css`
+                  background-color: rgb(229 231 235);
+              `)}
     width: 65px;
     padding-top: 8px;
     padding-bottom: 8px;
@@ -65,18 +77,20 @@ const SidebarElement = styled.div`
     position: relative;
     margin-top: 2px;
     margin-bottom: 2px;
-    ${props => props.active && css`
-        :after {
-            background-color: #0061b4;
-            border-radius: 6px;
-            content: "";
-            width: 50%;
-            top: 0px;
-            position: absolute;
-            left: calc((65px/2)-(45%/2));
-            height: 3px;
-        }
-    `}
+    ${(props) =>
+        props.active &&
+        css`
+            :after {
+                background-color: #0061b4;
+                border-radius: 6px;
+                content: "";
+                width: 50%;
+                top: 0px;
+                position: absolute;
+                left: calc((65px / 2)- (45% / 2));
+                height: 3px;
+            }
+        `}
 `;
 
 const SidebarElementLabel = styled.span`
@@ -91,30 +105,51 @@ interface Props {
 
 const SidebarBase = observe((props: Props) => {
     const navigate = useNavigate();
-    const darkTheme = useMemo(() => preferences.theme === "dark", [preferences.theme]);
+    const darkTheme = useMemo(
+        () => preferences.theme === "dark",
+        [preferences.theme],
+    );
 
     return (
         <>
             <SidebarDescription>
                 <b>{props.text}</b>
             </SidebarDescription>
-            <SidebarContents>
-                {props.children}
-            </SidebarContents>
+            <SidebarContents>{props.children}</SidebarContents>
             <SidebarElements>
-                <SidebarElement id="home" onClick={() => navigate("/app/home")} darkTheme={darkTheme} active={props.id === "home"}>
+                <SidebarElement
+                    id="home"
+                    onClick={() => navigate("/app/home")}
+                    darkTheme={darkTheme}
+                    active={props.id === "home"}
+                >
                     <Home20Regular />
                     <SidebarElementLabel>Home</SidebarElementLabel>
                 </SidebarElement>
-                <SidebarElement id="messages" onClick={() => navigate("/app/channels")} darkTheme={darkTheme} active={props.id === "messages"}>
+                <SidebarElement
+                    id="messages"
+                    onClick={() => navigate("/app/channels")}
+                    darkTheme={darkTheme}
+                    active={props.id === "messages"}
+                >
                     <Chat20Regular />
                     <SidebarElementLabel>Messages</SidebarElementLabel>
                 </SidebarElement>
-                <SidebarElement id="spaces" onClick={() => navigate("/app/spaces")} darkTheme={darkTheme} active={props.id === "spaces"}>
+                <SidebarElement
+                    id="spaces"
+                    onClick={() => navigate("/app/spaces")}
+                    darkTheme={darkTheme}
+                    active={props.id === "spaces"}
+                >
                     <Group20Regular />
                     <SidebarElementLabel>Spaces</SidebarElementLabel>
                 </SidebarElement>
-                <SidebarElement id="settings" onClick={() => navigate("/app/settings")} darkTheme={darkTheme} active={props.id === "settings"}>
+                <SidebarElement
+                    id="settings"
+                    onClick={() => navigate("/app/settings")}
+                    darkTheme={darkTheme}
+                    active={props.id === "settings"}
+                >
                     <Settings20Regular />
                     <SidebarElementLabel>Settings</SidebarElementLabel>
                 </SidebarElement>

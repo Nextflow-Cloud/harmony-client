@@ -7,7 +7,9 @@ const useChannel = () => {
     const client = useClient();
 
     // FIXME: remove this
-    return channel ? client.channels.get(channel) : client.channels.get("1") as Channel;
+    return channel
+        ? client.channels.get(channel)
+        : (client.channels.get("1") as Channel);
 };
 
 export default useChannel;

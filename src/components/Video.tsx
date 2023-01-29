@@ -3,8 +3,8 @@ import { VideoHTMLAttributes } from "react";
 import { useEffect, useRef } from "preact/hooks";
 
 type PropsType = VideoHTMLAttributes<HTMLVideoElement> & {
-    srcObject: MediaStream
-}
+    srcObject: MediaStream;
+};
 
 const Video = ({ srcObject, ...props }: PropsType) => {
     const refVideo = useRef<HTMLVideoElement>(null);

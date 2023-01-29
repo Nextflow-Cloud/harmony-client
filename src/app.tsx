@@ -15,8 +15,20 @@ interface Button {
 const App = () => {
     const [modalDialog, setModalDialog] = useState<JSX.Element>();
     // eslint-disable-next-line no-unused-vars
-    const showModalDialog = (title: string, content: string, buttons: Button[], onClose: (button: string) => void) => {
-        setModalDialog(<ModalDialog title={title} content={content} buttons={buttons} onClose={onClose} />);
+    const showModalDialog = (
+        title: string,
+        content: string,
+        buttons: Button[],
+        onClose: (button: string) => void,
+    ) => {
+        setModalDialog(
+            <ModalDialog
+                title={title}
+                content={content}
+                buttons={buttons}
+                onClose={onClose}
+            />,
+        );
     };
     const hideModalDialog = () => {
         setTimeout(() => {
@@ -26,25 +38,32 @@ const App = () => {
 
     return (
         <>
-                <Context>
-                    <Routes>
-                        <Route path="/" element={
+            <Context>
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
                             <Authenticated>
                                 <Navigate to="/app" />
                                 {/* TODO: Navigate to Nextflow information page if not signed in */}
                             </Authenticated>
-                        } />
-                    <Route path="/authenticate" element={
-                        <Authenticate />
-                    }/>
-                        <Route path="/app/*" element={
+                        }
+                    />
+                    <Route path="/authenticate" element={<Authenticate />} />
+                    <Route
+                        path="/app/*"
+                        element={
                             <Authenticated>
-                                <MainApp showModalDialog={showModalDialog} hideModalDialog={hideModalDialog} />
+                                <MainApp
+                                    showModalDialog={showModalDialog}
+                                    hideModalDialog={hideModalDialog}
+                                />
                             </Authenticated>
-                        } />
-                    </Routes>
-                </Context>
-                {modalDialog ? modalDialog : <></>}
+                        }
+                    />
+                </Routes>
+            </Context>
+            {modalDialog ? modalDialog : <></>}
         </>
     );
 };

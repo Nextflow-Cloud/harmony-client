@@ -1,4 +1,9 @@
-import { BookInformation20Filled, ChevronDown16Regular, ChevronDown20Filled, Megaphone20Filled } from "@fluentui/react-icons";
+import {
+    BookInformation20Filled,
+    ChevronDown16Regular,
+    ChevronDown20Filled,
+    Megaphone20Filled,
+} from "@fluentui/react-icons";
 import { useState } from "preact/hooks";
 import styled from "styled-components";
 import Space from "../../utilities/lib/Space";
@@ -12,8 +17,8 @@ const SpacesSidebarListItem = styled.div`
 
 const SpaceIcon = styled.div`
     border-radius: 5px;
-    background-color: #D9D9D9;
-    color: #00B574;
+    background-color: #d9d9d9;
+    color: #00b574;
     font-size: x-large;
     padding-left: 8px;
     padding-right: 8px;
@@ -21,9 +26,7 @@ const SpaceIcon = styled.div`
     text-align: center;
 `;
 
-const SpaceTitle = styled.span`
-    
-`;
+const SpaceTitle = styled.span``;
 
 const SpaceHeaderUnion = styled.div`
     display: flex;
@@ -54,7 +57,7 @@ const ChannelsList = styled.div`
     color: white;
 
     transition: all 0.5s;
-    margin-top: ${props => props.open ? "0%" : "-100%"};
+    margin-top: ${(props) => (props.open ? "0%" : "-100%")};
 `;
 
 const Channel = styled.div`
@@ -71,7 +74,7 @@ const Channel = styled.div`
 
 const DynamicChevron = styled(ChevronDown20Filled)`
     transition: transform 0.2s;
-    transform: rotate(${props => props.open ? "0deg" : "-90deg"});
+    transform: rotate(${(props) => (props.open ? "0deg" : "-90deg")});
 `;
 
 const ChannelsListWrapper = styled.div`
@@ -92,17 +95,21 @@ const SpaceItem = (props: Props) => {
                         {/* <span>🌎</span> */}
                         {props.space.name.charAt(0)}
                     </SpaceIcon>
-                    <SpaceTitle>
-                        {props.space.name}
-                    </SpaceTitle>
+                    <SpaceTitle>{props.space.name}</SpaceTitle>
                 </SpaceHeaderUnion>
-                <div onClick={() => setOpen(!open)} >
+                <div onClick={() => setOpen(!open)}>
                     <DynamicChevron open={open} />
                 </div>
             </SpaceHeader>
             <ChannelsListWrapper>
                 <ChannelsList open={open}>
-                    <div style={{ fontSize: "small", display: "flex", alignItems: "center" }}>
+                    <div
+                        style={{
+                            fontSize: "small",
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
                         <ChevronDown16Regular />
                         <span>Important</span>
                     </div>
@@ -114,7 +121,6 @@ const SpaceItem = (props: Props) => {
                         <Megaphone20Filled />
                         <span>Announcements</span>
                     </Channel>
-                    
                 </ChannelsList>
             </ChannelsListWrapper>
         </SpacesSidebarListItem>

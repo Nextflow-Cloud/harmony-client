@@ -7,12 +7,8 @@ import ModalDialog from "../ModalDialog";
 export const Context = ({ children }: { children: ComponentChildren }) => {
     return (
         <>
-            <Helmet>
-            
-            </Helmet>
-            <BrowserRouter>
-                {children}
-            </BrowserRouter>
+            <Helmet></Helmet>
+            <BrowserRouter>{children}</BrowserRouter>
             {/* <ModalDialog />
             <ContextMenu />
             <Tooltip /> */}

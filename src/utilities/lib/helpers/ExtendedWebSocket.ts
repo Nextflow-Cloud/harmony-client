@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 interface WebSocketEvents {
-    open: []
+    open: [];
     close: [code: number, reason: string];
     error: [error: Error];
     message: [message: WebSocketMessage];
@@ -12,6 +12,8 @@ interface WebSocketMessage {
     error?: string;
     id?: string;
 }
+
+export const enum WebSocketError {}
 
 export const enum WebSocketCodes {
     HELLO = "HELLO",
@@ -53,9 +55,18 @@ class ExtendedWebSocket extends EventEmitter<WebSocketEvents> {
     idStore: string[] = [];
     queue: WebSocketMessage[] = [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    openPromise?: [(value: void | PromiseLike<void>) => void, (reason: any) => void];
+    openPromise?: [
+        (value: void | PromiseLike<void>) => void,
+        (reason: any) => void,
+    ];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    waitingPromises: Record<string, [(value: WebSocketMessage | PromiseLike<WebSocketMessage>) => void, (reason: any) => void]> = {};
+    waitingPromises: Record<
+        string,
+        [
+            (value: WebSocketMessage | PromiseLike<WebSocketMessage>) => void,
+            (reason: any) => void,
+        ]
+    > = {};
     closed = false;
     interval?: number;
     reconnect: boolean;
@@ -75,25 +86,31 @@ class ExtendedWebSocket extends EventEmitter<WebSocketEvents> {
         console.debug(message);
         if (message.type === WebSocketCodes.HEARTBEAT) return;
         if (message.type === WebSocketCodes.HELLO) {
-            if (message.data?.requestIds && message.data.requestIds instanceof Array) 
-                for (const x of message.data.requestIds) 
-                    this.idStore.push(x);
+            if (
+                message.data?.requestIds &&
+                message.data.requestIds instanceof Array
+            )
+                for (const x of message.data.requestIds) this.idStore.push(x);
             const id = this.idStore.length && this.idStore.shift();
             if (id) {
-                this.request({ id, type: WebSocketCodes.IDENTIFY, data: { publicKey: [], token: this.token } })
+                this.request({
+                    id,
+                    type: WebSocketCodes.IDENTIFY,
+                    data: { publicKey: [], token: this.token },
+                })
                     .then(() => this.openPromise?.[0]())
-                    .catch(e => this.openPromise?.[1](e));
-            }
-            else this.openPromise?.[1](new Error("Unexpected error: No id available"));
+                    .catch((e) => this.openPromise?.[1](e));
+            } else
+                this.openPromise?.[1](
+                    new Error("Unexpected error: No id available"),
+                );
             return;
         }
         if (message.id) {
             const promise = this.waitingPromises[message.id];
             if (promise) {
-                if (message.error) 
-                    promise[1](new Error(message.error));
-                else
-                    promise[0](message);
+                if (message.error) promise[1](new Error(message.error));
+                else promise[0](message);
                 delete this.waitingPromises[message.id];
             }
         } else {
@@ -118,7 +135,7 @@ class ExtendedWebSocket extends EventEmitter<WebSocketEvents> {
             }, 5000);
         }
     }
-    
+
     send(data: WebSocketMessage) {
         this.queue.push(data);
     }
@@ -129,13 +146,16 @@ class ExtendedWebSocket extends EventEmitter<WebSocketEvents> {
                 const d = await new Promise((s, e) => {
                     const id = this.idStore.shift() as string;
                     this.waitingPromises[id] = [s, e];
-                    this.socket?.send(encode({ type: WebSocketCodes.GET_ID, id, data: {} }));
+                    this.socket?.send(
+                        encode({ type: WebSocketCodes.GET_ID, id, data: {} }),
+                    );
                 }).catch(reject);
-                const { requestIds } = (d as { data: { requestIds: string[] } }).data;
+                const { requestIds } = (d as { data: { requestIds: string[] } })
+                    .data;
                 for (const id of requestIds) this.idStore.push(id);
             }
             const id = this.idStore.length && this.idStore.shift();
-            if (id) { 
+            if (id) {
                 data.id = id;
                 this.waitingPromises[data.id] = [resolve, reject];
                 this.socket?.send(encode(data));

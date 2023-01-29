@@ -2,12 +2,12 @@ import { Client } from "./Client";
 import { User } from "./User";
 
 export interface MessageData {
-    content: string,
-    createdAt: number,
-    authorId: string,
-    edited: boolean,
-    editedAt?: number,
-    id: string,
+    content: string;
+    createdAt: number;
+    authorId: string;
+    edited: boolean;
+    editedAt?: number;
+    id: string;
 }
 
 export type MessageContent = string;
@@ -33,7 +33,6 @@ class Message {
 
     async edit(content: MessageContent) {
         throw new Error("Not implemented");
-
     }
 
     async reply(content: MessageContent) {

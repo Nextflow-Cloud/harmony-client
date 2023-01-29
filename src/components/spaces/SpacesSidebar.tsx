@@ -1,4 +1,4 @@
-import { Add20Regular  } from "@fluentui/react-icons";
+import { Add20Regular } from "@fluentui/react-icons";
 import { useEffect } from "preact/hooks";
 import styled from "styled-components";
 import { client, observe } from "../../utilities/state";
@@ -64,7 +64,7 @@ const SpacesSidebar = observe(() => {
     return (
         <SpacesSidebarContainer>
             <SpacesSidebarList>
-                {Array.from(client.client.spaces.values()).map(s => (
+                {Array.from(client.client.spaces.values()).map((s) => (
                     <SpaceItem space={s} />
                 ))}
                 {/* <SpaceItem name="Nextflow Support" /> */}

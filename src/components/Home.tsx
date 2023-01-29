@@ -1,5 +1,10 @@
 import styled, { css } from "styled-components";
-import { CompassNorthwest24Regular, Add24Regular, PersonFeedback24Regular, Settings24Regular } from "@fluentui/react-icons";
+import {
+    CompassNorthwest24Regular,
+    Add24Regular,
+    PersonFeedback24Regular,
+    Settings24Regular,
+} from "@fluentui/react-icons";
 import { useMemo } from "preact/hooks";
 import { preferences } from "../utilities/state";
 
@@ -34,11 +39,14 @@ const HomeCard = styled.div`
         margin-left: 0.5rem;
     }
     align-items: center;
-    ${props => props.darkTheme ? css`
-        background-color: rgb(156 163 175 / 0.5);
-    ` : css`
-        background-color: rgb(229 231 235);
-    `}
+    ${(props) =>
+        props.darkTheme
+            ? css`
+                  background-color: rgb(156 163 175 / 0.5);
+              `
+            : css`
+                  background-color: rgb(229 231 235);
+              `}
     user-select: none;
 `;
 
@@ -48,7 +56,10 @@ const HomeCardText = styled.div`
 `;
 
 const Home = () => {
-    const darkTheme = useMemo(() => preferences.theme === "dark", [preferences.theme]);
+    const darkTheme = useMemo(
+        () => preferences.theme === "dark",
+        [preferences.theme],
+    );
     return (
         <HomeContainer>
             <Welcome>
@@ -81,7 +92,6 @@ const Home = () => {
                         <p>Personalise the app.</p>
                     </HomeCardText>
                 </HomeCard>
-                
             </Welcome>
         </HomeContainer>
     );

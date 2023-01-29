@@ -1,4 +1,8 @@
-import { ExtendedWebSocket, WebSocketCodes, WebSocketMessage } from "./helpers/ExtendedWebSocket";
+import {
+    ExtendedWebSocket,
+    WebSocketCodes,
+    WebSocketMessage,
+} from "./helpers/ExtendedWebSocket";
 import { EventEmitter } from "eventemitter3";
 import { User } from "./User";
 import { ClientUser } from "./ClientUser";
@@ -28,7 +32,10 @@ class Client extends EventEmitter<ClientEvents> {
         this.socket = new ExtendedWebSocket(server, { reconnect: true });
         this.socket.on("message", async (message: WebSocketMessage) => {
             if (message.type === WebSocketCodes.NEW_CHANNEL_MESSAGE) {
-                const data = message.data as { message: MessageData; channelId: string; };
+                const data = message.data as {
+                    message: MessageData;
+                    channelId: string;
+                };
                 if (!this.users.has(data.message.authorId))
                     await this.fetchUser(data.message.authorId);
                 const user = this.users.get(data.message.authorId);
@@ -50,11 +57,14 @@ class Client extends EventEmitter<ClientEvents> {
     async fetchUser(id?: string) {
         if (id) {
             if (this.users.has(id)) return this.users.get(id);
-            const request = await fetch(`http://sso.nextflow.local/api/user/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${this.token}`
-                }
-            });
+            const request = await fetch(
+                `http://sso.nextflow.local/api/user/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.token}`,
+                    },
+                },
+            );
             if (request.ok) {
                 const response = await request.json();
                 const user = new User(response);
@@ -65,8 +75,8 @@ class Client extends EventEmitter<ClientEvents> {
             if (this.user) return this.user;
             const request = await fetch(`http://sso.nextflow.local/api/user`, {
                 headers: {
-                    Authorization: `Bearer ${this.token}`
-                }
+                    Authorization: `Bearer ${this.token}`,
+                },
             });
             if (request.ok) {
                 const response = await request.json();
@@ -78,7 +88,10 @@ class Client extends EventEmitter<ClientEvents> {
     }
 
     async fetchChannels() {
-        const request = await this.socket.request({ type: WebSocketCodes.GET_CHANNELS, data: {} });
+        const request = await this.socket.request({
+            type: WebSocketCodes.GET_CHANNELS,
+            data: {},
+        });
         const data = request.data as { channels: ChannelData[] };
         const channels = new ObservableMap<string, Channel>();
         for (const c of data.channels) {
@@ -89,7 +102,12 @@ class Client extends EventEmitter<ClientEvents> {
     }
 
     async fetchSpaces() {
-        const spaceData = (await this.socket.request({ type: WebSocketCodes.GET_SPACES, data: {} })).data as { spaces: SpaceData[] };
+        const spaceData = (
+            await this.socket.request({
+                type: WebSocketCodes.GET_SPACES,
+                data: {},
+            })
+        ).data as { spaces: SpaceData[] };
         for (const s of spaceData.spaces) {
             this.spaces.set(s.id, new Space(this, s));
         }
@@ -102,12 +120,15 @@ class Client extends EventEmitter<ClientEvents> {
         await this.fetchUser();
         this.emit("ready");
         this.ready = true;
-        
+
         // FIXME: Remove this
-        this.channels.set("1", new ChatChannel(this, {
-            id: "1",
-            type: "CHAT_CHANNEL"
-        }));
+        this.channels.set(
+            "1",
+            new ChatChannel(this, {
+                id: "1",
+                type: "CHAT_CHANNEL",
+            }),
+        );
     }
 
     destroy() {
@@ -120,9 +141,12 @@ class Client extends EventEmitter<ClientEvents> {
     }
 
     async createSpace(name: string) {
-        const request = await this.socket.request({ type: "CREATE_SPACE" as WebSocketCodes, data: {
-            name
-        } });
+        const request = await this.socket.request({
+            type: "CREATE_SPACE" as WebSocketCodes,
+            data: {
+                name,
+            },
+        });
         const data = request.data as { space: SpaceData };
         const space = new Space(this, data.space);
         this.spaces.set(data.space.id, space);

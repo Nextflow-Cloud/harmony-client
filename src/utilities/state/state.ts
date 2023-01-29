@@ -14,56 +14,71 @@ export class ObservableObjectInternal<T extends object> implements Observable {
 
     observe(handler: () => void) {
         this._listeners.push(handler);
-    };
+    }
     unobserve(handler: () => void) {
-        this._listeners = this._listeners.filter(l => l !== handler);
-    };
+        this._listeners = this._listeners.filter((l) => l !== handler);
+    }
 
     static create<T extends object>(object: T) {
         const observable = new this(object);
-        
+
         return new Proxy(observable, {
             set: (obj, prop, value) => {
-                if (["observe", "unobserve", "_listeners", "_object"].includes(prop as string)) {
-                    (obj as unknown as { [key: string | symbol]: unknown })[prop] = value;
+                if (
+                    ["observe", "unobserve", "_listeners", "_object"].includes(
+                        prop as string,
+                    )
+                ) {
+                    (obj as unknown as { [key: string | symbol]: unknown })[
+                        prop
+                    ] = value;
                     return true;
                 }
-                (obj._object as { [key: string | symbol]: unknown })[prop] = value;
-                obj._listeners.forEach(l => l());
+                (obj._object as { [key: string | symbol]: unknown })[prop] =
+                    value;
+                obj._listeners.forEach((l) => l());
                 return true;
             },
             get: (obj, prop) => {
-                if (!["observe", "unobserve", "_listeners", "_object"].includes(prop as string))
-                    return (obj._object as { [key: string | symbol]: unknown })[prop];
-                return (obj as unknown as { [key: string | symbol]: unknown })[prop];
+                if (
+                    !["observe", "unobserve", "_listeners", "_object"].includes(
+                        prop as string,
+                    )
+                )
+                    return (obj._object as { [key: string | symbol]: unknown })[
+                        prop
+                    ];
+                return (obj as unknown as { [key: string | symbol]: unknown })[
+                    prop
+                ];
             },
         });
     }
 }
 
 interface Observable {
-    observe: ((handler: () => void) => void);
-    unobserve: ((handler: () => void) => void);
+    observe: (handler: () => void) => void;
+    unobserve: (handler: () => void) => void;
 }
 
 export class ObservableMap<K, V> extends Map<K, V> implements Observable {
     private _listeners: (() => void)[] = [];
     clear(): void {
-        this._listeners.forEach(l => l());
+        this._listeners.forEach((l) => l());
         super.clear();
     }
 
     delete(key: K): boolean {
         let result = super.delete(key);
         if (result) {
-            this._listeners.forEach(l => l());
+            this._listeners.forEach((l) => l());
         }
         return result;
     }
 
     set(key: K, value: V): this {
         super.set(key, value);
-        this._listeners.forEach(l => l());
+        this._listeners.forEach((l) => l());
         return this;
     }
 
@@ -72,22 +87,29 @@ export class ObservableMap<K, V> extends Map<K, V> implements Observable {
     }
 
     unobserve(listener: () => void) {
-        this._listeners = this._listeners.filter(l => l !== listener);
+        this._listeners = this._listeners.filter((l) => l !== listener);
     }
 }
 
-export const intoObservable = <T extends object>(object: T): ObservableObject<T> => {
-    return ObservableObjectInternal.create(object) as unknown as ObservableObject<T>;
+export const intoObservable = <T extends object>(
+    object: T,
+): ObservableObject<T> => {
+    return ObservableObjectInternal.create(
+        object,
+    ) as unknown as ObservableObject<T>;
 };
 
-export const observe = <T = {}>(f: FunctionComponent<T>, store?: Observable | Observable[]) => {
+export const observe = <T = {}>(
+    f: FunctionComponent<T>,
+    store?: Observable | Observable[],
+) => {
     return (props: RenderableProps<T>) => {
         const [_, setState] = useState(0);
         useEffect(() => {
             const handler = () => setState(Math.random());
             if (Array.isArray(store)) {
-                store.forEach(s => s.observe(handler));
-                return () => store.forEach(s => s.unobserve(handler));
+                store.forEach((s) => s.observe(handler));
+                return () => store.forEach((s) => s.unobserve(handler));
             } else {
                 store?.observe(handler);
                 return () => store?.unobserve(handler);
@@ -97,7 +119,10 @@ export const observe = <T = {}>(f: FunctionComponent<T>, store?: Observable | Ob
     };
 };
 
-export const observeHook = <X, Y>(h: (...args: X[]) => Y, store?: Observable) => {
+export const observeHook = <X, Y>(
+    h: (...args: X[]) => Y,
+    store?: Observable,
+) => {
     return (...args: X[]) => {
         const [_, setState] = useState(0);
         useEffect(() => {

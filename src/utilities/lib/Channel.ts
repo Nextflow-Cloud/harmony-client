@@ -7,7 +7,12 @@ export interface ChannelData {
     type: ChannelType;
 }
 
-type ChannelType = "PRIVATE_CHANNEL" | "GROUP_CHANNEL" | "ANNOUNCEMENT_CHANNEL" | "INFORMATION_CHANNEL" | "CHAT_CHANNEL";
+type ChannelType =
+    | "PRIVATE_CHANNEL"
+    | "GROUP_CHANNEL"
+    | "ANNOUNCEMENT_CHANNEL"
+    | "INFORMATION_CHANNEL"
+    | "CHAT_CHANNEL";
 
 class Channel {
     id: string;
@@ -34,10 +39,13 @@ class ChatChannel extends Channel {
     }
 
     public async send(message: string) {
-        const response = await this.client.socket?.request({ type: WebSocketCodes.SEND_CHANNEL_MESSAGE, data: { channelId: this.id, content: message } });
+        const response = await this.client.socket?.request({
+            type: WebSocketCodes.SEND_CHANNEL_MESSAGE,
+            data: { channelId: this.id, content: message },
+        });
         if (!response) throw new Error("Socket is not connected");
         if (response.error) throw new Error(response.error as string);
-        return response.data as { id: string; };
+        return response.data as { id: string };
     }
 }
 

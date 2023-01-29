@@ -6,7 +6,7 @@ class ScopeManager {
 
     constructor() {
         this.cache = new LRU(5);
-    }    
+    }
 }
 
 export default ScopeManager;

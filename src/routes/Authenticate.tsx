@@ -1,6 +1,6 @@
 import { useEffect } from "preact/hooks";
 import Loading from "../components/Loading";
-import { useNavigate, useSearchParams }from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Authenticate = () => {
     const [searchParams] = useSearchParams();
@@ -16,9 +16,12 @@ const Authenticate = () => {
         } else {
             const url = new URL("http://sso.nextflow.local/login");
             const current = new URL("http://chat.nextflow.local/authenticate");
-            current.searchParams.set("next", searchParams.get("next") ?? "https://chat.nextflow.cloud/app");
+            current.searchParams.set(
+                "next",
+                searchParams.get("next") ?? "https://chat.nextflow.cloud/app",
+            );
             url.searchParams.set("continue", current.toString());
-            
+
             location.href = url.toString();
         }
     }, []);

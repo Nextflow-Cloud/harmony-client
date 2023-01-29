@@ -13,14 +13,12 @@ const MessagesItem = styled.div`
     margin-top: 4px;
     margin-bottom: 4px;
     padding: 8px;
-`
+`;
 
 function ChannelSidebar() {
     return (
         <MessagesSidebarBase>
-            <MessagesItem>
-                Emperor of Bluegaria
-            </MessagesItem>
+            <MessagesItem>Emperor of Bluegaria</MessagesItem>
         </MessagesSidebarBase>
     );
 }

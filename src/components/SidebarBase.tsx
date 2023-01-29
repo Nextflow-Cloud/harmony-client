@@ -22,6 +22,7 @@ const SidebarContents = styled.div`
     padding-right: 1.25rem;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
+    min-height: 0;
 `;
 
 const SidebarElements = styled.div`
@@ -91,7 +92,7 @@ interface Props {
 const SidebarBase = observe((props: Props) => {
     const navigate = useNavigate();
     const darkTheme = useMemo(() => preferences.theme === "dark", [preferences.theme]);
-    
+
     return (
         <>
             <SidebarDescription>

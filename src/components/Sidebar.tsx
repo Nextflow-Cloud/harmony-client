@@ -2,8 +2,9 @@ import { useMemo } from "preact/hooks";
 import { Route, Routes } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { observe, preferences } from "../utilities/state";
+import ChannelSidebar from "./channels/ChannelSidebar";
 import SidebarBase from "./SidebarBase";
-import SpacesSidebar from "./SpacesSidebar";
+import SpacesSidebar from "./spaces/SpacesSidebar";
 
 const SidebarContainer = styled.div`
     flex-shrink: 1;
@@ -22,6 +23,7 @@ const SidebarContainer = styled.div`
     flex-direction: column;
     justify-content: space-between;
     align-items: start;
+    /* overflow: auto; */
     margin: 0;
 `;
 
@@ -39,14 +41,15 @@ const Sidebar = observe(() => {
                 } />
                 <Route path="/channels" element={
                     <SidebarBase id="messages" text="Messages">
-                        <div class="flex flex-col">
+                        {/* <div class="flex flex-col">
                             <div class="user rounded-md border my-1 p-2">
                                 hi 1
                             </div>
                             <div class="user rounded-md border my-1 p-2">
                                 hi 2
                             </div>
-                        </div>
+                        </div> */}
+                        <ChannelSidebar />
                     </SidebarBase>
                 } />
                 <Route path="/spaces" element={

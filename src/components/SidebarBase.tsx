@@ -1,9 +1,9 @@
 import { Chat20Regular, Group20Regular, Home20Regular, Settings20Regular } from "@fluentui/react-icons";
 import { ComponentChildren } from "preact";
-import { shallowEqual } from "react-redux";
+import { useMemo } from "preact/hooks";
 import { useNavigate } from "react-router-dom";
 import styled, { css } from "styled-components";
-import { useAppSelector } from "../utilities/redux/redux";
+import { observe, preferences } from "../utilities/state";
 
 const SidebarDescription = styled.div`
     justify-content: flex-start;
@@ -88,10 +88,9 @@ interface Props {
     children: ComponentChildren;
 }
 
-const SidebarBase = (props: Props) => {
+const SidebarBase = observe((props: Props) => {
     const navigate = useNavigate();
-
-    const darkTheme = useAppSelector(state => state.preferences.theme === "dark", shallowEqual);
+    const darkTheme = useMemo(() => preferences.theme === "dark", [preferences.theme]);
     
     return (
         <>
@@ -121,6 +120,6 @@ const SidebarBase = (props: Props) => {
             </SidebarElements>
         </>
     );
-};
+}, preferences);
 
 export default SidebarBase;

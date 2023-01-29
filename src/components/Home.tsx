@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { CompassNorthwest24Regular, Add24Regular, PersonFeedback24Regular, Settings24Regular } from "@fluentui/react-icons";
-import { useAppSelector } from "../utilities/redux/redux";
-import { shallowEqual } from "react-redux";
+import { useMemo } from "preact/hooks";
+import { preferences } from "../utilities/state";
 
 const HomeContainer = styled.div`
     display: flex;
@@ -48,7 +48,7 @@ const HomeCardText = styled.div`
 `;
 
 const Home = () => {
-    const darkTheme = useAppSelector(state => state.preferences.theme === "dark", shallowEqual);
+    const darkTheme = useMemo(() => preferences.theme === "dark", [preferences.theme]);
     return (
         <HomeContainer>
             <Welcome>

@@ -1,15 +1,14 @@
 import { Channel28Regular, Call28Filled, MoreVertical28Filled, Send28Regular } from "@fluentui/react-icons";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 // import CallConnector from "./CallConnector";
-import { useAppSelector } from "../utilities/redux/redux";
 import Message from "./Message";
-import { shallowEqual } from "react-redux";
 import { ChatChannel } from "../utilities/lib/Channel";
 import ChannelMessage from "../utilities/lib/Message";
 import { Navigate } from "react-router-dom";
 import useChannel from "../hooks/useChannel";
 import styled, { css } from "styled-components";
 import useClient from "../hooks/useClient";
+import { observe, preferences } from "../utilities/state";
 // import expandingTextArea from "../utilities/expandingTextArea";
 // import { Virtuoso } from "react-virtuoso";
 // import { ChannelRenderer } from "../utilities/ChannelRenderer";
@@ -45,7 +44,7 @@ const MessagesContainer = styled.div`
     `}
 `;
 
-const Channel = ({ openContextMenu, closeContextMenu, showModalDialog, hideModalDialog }: Props) => {
+const Channel = observe(({ openContextMenu, closeContextMenu, showModalDialog, hideModalDialog }: Props) => {
     // const [currentUser, setCurrentUser] = useState<User>({ id: "1", username: "John Doe", avatar: "https://avatars0.githubusercontent.com/u/17098281?s=460&u=e8d9c9f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8&v=4" });
     const [message, setMessage] = useState("");
     // const [isOpen, setIsOpen] = useState(false);
@@ -53,7 +52,7 @@ const Channel = ({ openContextMenu, closeContextMenu, showModalDialog, hideModal
     const [call, setCall] = useState(false);
     const [loadedMessages, setLoadedMessages] = useState<ChannelMessage[]>([]);
     
-    const darkTheme = useAppSelector(state => state.preferences.theme === "dark", shallowEqual);
+    const darkTheme = useMemo(() => preferences.theme === "dark", [preferences.theme]);
 
     const messagesElement = useRef<HTMLDivElement>(null);
     const messageInput = useRef<HTMLTextAreaElement>(null);
@@ -187,6 +186,6 @@ const Channel = ({ openContextMenu, closeContextMenu, showModalDialog, hideModal
             </div>
         </ChannelContainer>
     );
-};
+}, preferences);
 
 export default Channel;

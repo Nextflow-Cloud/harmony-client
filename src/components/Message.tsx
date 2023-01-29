@@ -1,10 +1,10 @@
 import { MoreVertical28Filled } from "@fluentui/react-icons";
-import { shallowEqual } from "react-redux";
 import styled, { css } from "styled-components";
 import { formatTime } from "../utilities/helpers";
-import { useAppSelector } from "../utilities/redux/redux";
 import StyleParser from "./StyleParser";
 import ChannelMessage from "../utilities/lib/Message";
+import { useMemo } from "preact/hooks";
+import { preferences } from "../utilities/state";
 
 interface Props {
     message: ChannelMessage;
@@ -55,10 +55,10 @@ const MessageHeader = styled.div`
 `;
 
 const Message = (props: Props) => {
-    const darkTheme = useAppSelector(state => state.preferences.theme === "dark", shallowEqual);
+    const darkTheme = useMemo(() => preferences.theme === "dark", [preferences.theme]);
 
     return (
-        <MessageContainer darkTheme={darkTheme}>
+        <MessageContainer darkTheme={darkTheme} id={props.message.id}>
             <MessageBase> 
                 <img src={"https://cdn.discordapp.com/avatars/494187257041780746/c6f8d7b695d6fa2f101010be71f29818.png?size=256"} className="message-header-avatar w-12 h-12 rounded-full self-start border-slate-400 border-2 left-2 absolute m-2" style={{
                     marginTop: "calc(4px - .25rem)"

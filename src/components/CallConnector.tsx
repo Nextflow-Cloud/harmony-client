@@ -4,8 +4,8 @@ import Call, { ConsumerData } from "../utilities/Call";
 import { Call24Filled, ShareScreenStart24Filled, CallCheckmark20Filled, CallEnd20Filled, CallConnecting20Filled, MicOff24Filled, Mic24Filled, ShareScreenStop24Filled } from "@fluentui/react-icons";
 import "../tooltips.css";
 import { Producer } from "mediasoup-client/lib/Producer";
-import { store } from "../utilities/redux/redux";
 import { ExtendedWebSocket } from "../utilities/lib/lib";
+import { client } from "../utilities/state";
 
 const CallConnector = ({ token, socket }: { token: string; socket: ExtendedWebSocket }) => {
     const [call, setCall] = useState<Call>();
@@ -85,7 +85,7 @@ const CallConnector = ({ token, socket }: { token: string; socket: ExtendedWebSo
                 {callMembers && callMembers.map(m => 
                     <div key={m[0]} class="user rounded-md bg-violet-400 w-1/3 m-2 p-4 border relative">
                         <br />
-                        <div class="bottom-4 absolute text-white">{store.getState().client.client?.users.get(m[1]) ?? "Unknown user"}</div>
+                        <div class="bottom-4 absolute text-white">{client.client.users.get(m[1]) ?? "Unknown user"}</div>
                     </div>
                 )}
                 {/* <div class="user rounded-md bg-violet-400 w-1/3 m-2 p-4 border relative">

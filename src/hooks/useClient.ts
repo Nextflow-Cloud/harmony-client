@@ -1,9 +1,5 @@
-import { shallowEqual } from "react-redux";
-import { useAppSelector } from "../utilities/redux/redux";
+import { client, observeHook } from "../utilities/state";
 
-const useClient = () => {
-    const client = useAppSelector(state => state.client.client, shallowEqual);
-    return client;
-};
+const useClient = observeHook(() => client.client, client);
 
 export default useClient;

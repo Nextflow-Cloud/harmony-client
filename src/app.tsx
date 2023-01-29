@@ -4,8 +4,6 @@ import MainApp from "./routes/MainApp";
 import ModalDialog from "./components/ModalDialog";
 import { JSX } from "preact";
 import { useState } from "preact/hooks";
-import { Provider } from "react-redux";
-import { store } from "./utilities/redux/redux";
 import { Context } from "./components/helpers/Context";
 interface Button {
     text: string;
@@ -27,7 +25,6 @@ const App = () => {
 
     return (
         <>
-            <Provider store={store}>
                 <Context>
                     <Routes>
                         <Route path="/" element={
@@ -44,7 +41,6 @@ const App = () => {
                     </Routes>
                 </Context>
                 {modalDialog ? modalDialog : <></>}
-            </Provider>
         </>
     );
 };

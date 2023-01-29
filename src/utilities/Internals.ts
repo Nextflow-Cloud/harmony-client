@@ -1,8 +1,10 @@
 import { ExtendedWebSocket } from "./lib/lib";
-import { store } from "./redux/redux";
+import { client, intoObservable, preferences } from "./state";
 
 class Internals {
     ExtendedWebSocket = ExtendedWebSocket;
+    intoObservable = intoObservable;
+
     protected flags: Record<string, boolean> = {};
 
     applyFlag(k: string, v: boolean) {
@@ -14,7 +16,7 @@ class Internals {
     }
 
     getState() {
-        return store.getState();
+        return { client, preferences };
     }
 }
 

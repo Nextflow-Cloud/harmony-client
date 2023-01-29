@@ -1,6 +1,5 @@
-import { useRef } from "preact/hooks";
-import { shallowEqual } from "react-redux";
-import { useAppSelector } from "../utilities/redux/redux";
+import { useMemo, useRef } from "preact/hooks";
+import { preferences } from "../utilities/state";
 
 interface Button {
     text: string;
@@ -19,7 +18,7 @@ interface Props {
 const ModalDialog = ({ title, content, onClose, buttons }: Props) => {
 
     const dialog = useRef<HTMLDivElement>(null);
-    const darkTheme = useAppSelector(state => state.preferences.theme === "dark", shallowEqual);
+    const darkTheme = useMemo(() => preferences.theme === "dark", [preferences.theme]);
     
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 backdrop-blur-sm z-50 fadein" onContextMenu={e => e.preventDefault()} ref={dialog}>

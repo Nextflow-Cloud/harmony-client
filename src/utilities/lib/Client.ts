@@ -6,6 +6,7 @@ import { Channel, ChatChannel } from "./Channel";
 import { LRU } from "./helpers/LRU";
 import Message, { MessageData } from "./Message";
 import Space, { SpaceData } from "./Space";
+import { ObservableMap } from "../state";
 
 export interface ClientEvents {
     ready: [];
@@ -15,10 +16,10 @@ export interface ClientEvents {
 class Client extends EventEmitter<ClientEvents> {
     socket: ExtendedWebSocket;
     token?: string;
-    channels: Map<string, Channel>;
+    channels: ObservableMap<string, Channel>;
     user?: ClientUser;
     users: LRU<User>;
-    spaces: Map<string, Space>;
+    spaces: ObservableMap<string, Space>;
     ready: boolean = false;
 
     constructor(server: string) {
@@ -40,9 +41,9 @@ class Client extends EventEmitter<ClientEvents> {
             }
         });
 
-        this.channels = new Map();
+        this.channels = new ObservableMap();
         this.users = new LRU(500);
-        this.spaces = new Map();
+        this.spaces = new ObservableMap();
     }
 
     async fetchUser(id?: string) {
@@ -94,16 +95,17 @@ class Client extends EventEmitter<ClientEvents> {
         this.emit("ready");
         this.ready = true;
         
+        // FIXME: Remove this
         this.channels.set("1", new ChatChannel(this, {
             id: "1",
-            type: "CHAT"
+            type: "CHAT_CHANNEL"
         }));
     }
 
     destroy() {
         this.ready = false;
         this.socket.destroy();
-        this.channels = new Map();
+        this.channels = new ObservableMap();
         this.users = new LRU(500);
         this.user = undefined;
         this.token = undefined;

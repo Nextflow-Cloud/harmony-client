@@ -1,7 +1,7 @@
-import { shallowEqual } from "react-redux";
+import { useMemo } from "preact/hooks";
 import { Route, Routes } from "react-router-dom";
 import styled, { css } from "styled-components";
-import { useAppSelector } from "../utilities/redux/redux";
+import { observe, preferences } from "../utilities/state";
 import SidebarBase from "./SidebarBase";
 import SpacesSidebar from "./SpacesSidebar";
 
@@ -25,8 +25,8 @@ const SidebarContainer = styled.div`
     margin: 0;
 `;
 
-const Sidebar = () => {
-    const darkTheme = useAppSelector(state => state.preferences.theme === "dark", shallowEqual);
+const Sidebar = observe(() => {
+    const darkTheme = useMemo(() => preferences.theme === "dark", [preferences.theme]);
     // transform: "translate3d(0, 0, 0)",
     // transition: "all 0.3s ease 0s",
     return (
@@ -63,6 +63,6 @@ const Sidebar = () => {
 
         </SidebarContainer>
     );
-};
+}, preferences);
 
 export default Sidebar;

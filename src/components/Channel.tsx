@@ -94,8 +94,10 @@ const Channel = observe(({ openContextMenu, closeContextMenu, showModalDialog, h
     }, [messageInput]);
 
     const loadMessages = async () => {
+        if (channel) {
         const msgs = Array.from((await (channel as ChatChannel).messages.fetch({ latest: true })).values()).reverse();
         setLoadedMessages(msgs);
+        }
     };
 
     const joinCall = () => {
@@ -137,7 +139,7 @@ const Channel = observe(({ openContextMenu, closeContextMenu, showModalDialog, h
 
     if (!channel) {
         return (
-            <Navigate to="/app/home" />
+            <ChannelContainer />
         );
     }
     

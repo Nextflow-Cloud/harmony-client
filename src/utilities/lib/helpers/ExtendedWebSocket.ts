@@ -7,9 +7,9 @@ interface WebSocketEvents {
 }
 
 interface WebSocketMessage {
-    type: WebSocketCodes;
+    type?: WebSocketCodes;
     data?: Record<string, unknown>;
-    error?: number;
+    error?: string;
     id?: string;
 }
 
@@ -17,8 +17,6 @@ export const enum WebSocketCodes {
     HELLO = "HELLO",
     IDENTIFY = "IDENTIFY",
     HEARTBEAT = "HEARTBEAT",
-    HEARTBEAT_ACK = "HEARTBEAT_ACK",
-    ERROR = "ERROR",
     GET_ID = "GET_ID",
 
     GET_CHANNELS = "GET_CHANNELS",
@@ -69,13 +67,13 @@ class ExtendedWebSocket extends EventEmitter<WebSocketEvents> {
     }
     protected onOpen(event: Event) {
         this.interval = setInterval(() => {
-            this.socket?.send(encode({ type: WebSocketCodes.HEARTBEAT }));
+            this.request({ type: WebSocketCodes.HEARTBEAT, data: {} });
         }, 10000);
     }
     protected onMessage(event: MessageEvent) {
         const message = decode(event.data as ArrayBuffer) as WebSocketMessage;
         console.debug(message);
-        if (message.type === WebSocketCodes.HEARTBEAT_ACK) return;
+        if (message.type === WebSocketCodes.HEARTBEAT) return;
         if (message.type === WebSocketCodes.HELLO) {
             if (message.data?.requestIds && message.data.requestIds instanceof Array) 
                 for (const x of message.data.requestIds) 
@@ -92,8 +90,8 @@ class ExtendedWebSocket extends EventEmitter<WebSocketEvents> {
         if (message.id) {
             const promise = this.waitingPromises[message.id];
             if (promise) {
-                if (message.type === WebSocketCodes.ERROR) 
-                    promise[1](new Error(`Error ${message.error}: ${message.data?.message}`));
+                if (message.error) 
+                    promise[1](new Error(message.error));
                 else
                     promise[0](message);
                 delete this.waitingPromises[message.id];
@@ -116,7 +114,7 @@ class ExtendedWebSocket extends EventEmitter<WebSocketEvents> {
 
         if (this.reconnect && !this.manuallyClosed) {
             setTimeout(() => {
-                this.connect();
+                this.connect(this.token);
             }, 5000);
         }
     }
@@ -125,7 +123,7 @@ class ExtendedWebSocket extends EventEmitter<WebSocketEvents> {
         this.queue.push(data);
     }
     async request(data: WebSocketMessage) {
-        console.log(data);
+        console.debug(data);
         return await new Promise<WebSocketMessage>(async (resolve, reject) => {
             if (this.idStore.length && this.idStore.length < 3) {
                 const d = await new Promise((s, e) => {

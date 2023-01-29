@@ -2,12 +2,12 @@ import { Client } from "./Client";
 import { WebSocketCodes } from "./helpers/ExtendedWebSocket";
 import MessageManager from "./MessageManager";
 
-interface ChannelData {
+export interface ChannelData {
     id: string;
     type: ChannelType;
 }
 
-type ChannelType = "PRIVATE" | "GROUP" | "ANNOUNCEMENT" | "INFORMATION" | "CHAT";
+type ChannelType = "PRIVATE_CHANNEL" | "GROUP_CHANNEL" | "ANNOUNCEMENT_CHANNEL" | "INFORMATION_CHANNEL" | "CHAT_CHANNEL";
 
 class Channel {
     id: string;
@@ -24,7 +24,7 @@ class Channel {
 
 class ChatChannel extends Channel {
     messages: MessageManager;
-    type: ChannelType = "CHAT";
+    type: ChannelType = "CHAT_CHANNEL";
 
     constructor(client: Client, options: ChannelData) {
         super(client, options);
@@ -36,7 +36,7 @@ class ChatChannel extends Channel {
     public async send(message: string) {
         const response = await this.client.socket?.request({ type: WebSocketCodes.SEND_CHANNEL_MESSAGE, data: { channelId: this.id, content: message } });
         if (!response) throw new Error("Socket is not connected");
-        if (response.type === WebSocketCodes.ERROR) throw new Error(response.data?.message as string);
+        if (response.error) throw new Error(response.error as string);
         return response.data as { id: string; };
     }
 }

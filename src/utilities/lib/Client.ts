@@ -2,7 +2,7 @@ import { ExtendedWebSocket, WebSocketCodes, WebSocketMessage } from "./helpers/E
 import { EventEmitter } from "eventemitter3";
 import { User } from "./User";
 import { ClientUser } from "./ClientUser";
-import { Channel, ChatChannel } from "./Channel";
+import { Channel, ChannelData, ChatChannel } from "./Channel";
 import { LRU } from "./helpers/LRU";
 import Message, { MessageData } from "./Message";
 import Space, { SpaceData } from "./Space";
@@ -11,6 +11,7 @@ import { ObservableMap } from "../state";
 export interface ClientEvents {
     ready: [];
     messageCreate: [Message];
+    joinSpace: [Space];
 }
 
 class Client extends EventEmitter<ClientEvents> {
@@ -77,11 +78,18 @@ class Client extends EventEmitter<ClientEvents> {
     }
 
     async fetchChannels() {
-        throw new Error("Not implemented");
+        const request = await this.socket.request({ type: WebSocketCodes.GET_CHANNELS, data: {} });
+        const data = request.data as { channels: ChannelData[] };
+        const channels = new ObservableMap<string, Channel>();
+        for (const c of data.channels) {
+            channels.set(c.id, new Channel(this, c));
+        }
+        this.channels = channels;
+        return channels;
     }
 
     async fetchSpaces() {
-        const spaceData = (await this.socket.request({ type: WebSocketCodes.GET_SPACES })).data as { spaces: SpaceData[] };
+        const spaceData = (await this.socket.request({ type: WebSocketCodes.GET_SPACES, data: {} })).data as { spaces: SpaceData[] };
         for (const s of spaceData.spaces) {
             this.spaces.set(s.id, new Space(this, s));
         }
@@ -109,6 +117,16 @@ class Client extends EventEmitter<ClientEvents> {
         this.users = new LRU(500);
         this.user = undefined;
         this.token = undefined;
+    }
+
+    async createSpace(name: string) {
+        const request = await this.socket.request({ type: "CREATE_SPACE" as WebSocketCodes, data: {
+            name
+        } });
+        const data = request.data as { space: SpaceData };
+        const space = new Space(this, data.space);
+        this.spaces.set(data.space.id, space);
+        this.emit("joinSpace", space);
     }
 }
 

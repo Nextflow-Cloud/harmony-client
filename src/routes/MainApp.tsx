@@ -4,8 +4,6 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Channel from "../components/Channel";
 import Loading from "../components/Loading";
-import { Client } from "../utilities/lib/Client";
-import useClient from "../hooks/useClient";
 import styled from "styled-components";
 import ContentContainer from "../components/ContentContainer";
 import Home from "../components/Home";

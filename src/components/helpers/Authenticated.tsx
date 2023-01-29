@@ -1,17 +1,15 @@
 import { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
-const getCookie = (name: string) => document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`))?.[2];
-
 const Authenticate = (props: { children: ComponentChildren; }) => {
     const [timedOut, setTimedOut] = useState(false);
     const [failed, setFailed] = useState(false);
     const [succeeded, setSucceeded] = useState(false);
 
     const checkToken = async () => {
-        if (getCookie("token") !== null) {
-            const token = getCookie("token");
-            const request = await Promise.race([fetch("https://sso.nextflow.cloud/api/validate", {
+        const token = localStorage.getItem("token");
+        if (token !== null) {
+            const request = await Promise.race([fetch("http://sso.nextflow.local/api/validate", {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
@@ -32,7 +30,9 @@ const Authenticate = (props: { children: ComponentChildren; }) => {
     }, []);
 
     if (failed) {
-        location.href = `https://sso.nextflow.cloud/login?continue=${encodeURIComponent(location.href)}`;
+        const url = new URL("http://chat.nextflow.local/authenticate");
+        url.searchParams.set("next", location.href);
+        location.href = `http://sso.nextflow.local/login?continue=${encodeURIComponent(url.toString())}`;
         return <></>;
     } 
     return (

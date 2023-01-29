@@ -5,6 +5,7 @@ import ModalDialog from "./components/ModalDialog";
 import { JSX } from "preact";
 import { useState } from "preact/hooks";
 import { Context } from "./components/helpers/Context";
+import Authenticate from "./routes/Authenticate";
 interface Button {
     text: string;
     id: string;
@@ -33,6 +34,9 @@ const App = () => {
                                 {/* TODO: Navigate to Nextflow information page if not signed in */}
                             </Authenticated>
                         } />
+                    <Route path="/authenticate" element={
+                        <Authenticate />
+                    }/>
                         <Route path="/app/*" element={
                             <Authenticated>
                                 <MainApp showModalDialog={showModalDialog} hideModalDialog={hideModalDialog} />

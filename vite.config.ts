@@ -7,7 +7,4 @@ export default defineConfig({
     server: {
         port: 9000,
     },
-    esbuild: {
-        logOverride: { "this-is-undefined-in-esm": "silent" }
-    }
 });

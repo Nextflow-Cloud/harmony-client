@@ -50,7 +50,7 @@ class Client extends EventEmitter<ClientEvents> {
     async fetchUser(id?: string) {
         if (id) {
             if (this.users.has(id)) return this.users.get(id);
-            const request = await fetch(`https://sso.nextflow.cloud/api/user/${id ?? ""}`, {
+            const request = await fetch(`http://sso.nextflow.local/api/user/${id}`, {
                 headers: {
                     Authorization: `Bearer ${this.token}`
                 }
@@ -63,7 +63,7 @@ class Client extends EventEmitter<ClientEvents> {
             }
         } else {
             if (this.user) return this.user;
-            const request = await fetch(`https://sso.nextflow.cloud/api/user/`, {
+            const request = await fetch(`http://sso.nextflow.local/api/user`, {
                 headers: {
                     Authorization: `Bearer ${this.token}`
                 }
